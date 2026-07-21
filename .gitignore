@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data and models
+data/raw/
+data/processed/
+*.zip
+*.tar
+*.tar.gz
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Results that may become large
+results/raw/
+wandb/
+mlruns/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.key
