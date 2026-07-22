@@ -34,3 +34,4 @@ Thumbs.db
 
 # Compressed dataset archives
 *.tar.xz
+.idea/
