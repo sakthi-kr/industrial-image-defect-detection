@@ -31,3 +31,6 @@ Thumbs.db
 # Secrets
 .env
 *.key
+
+# Compressed dataset archives
+*.tar.xz
