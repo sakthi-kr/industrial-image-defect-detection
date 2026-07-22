@@ -1,28 +1,20 @@
 # Dataset Instructions
 
-This project uses the MVTec AD industrial anomaly detection dataset.
+This project uses the MVTec AD industrial anomaly-detection dataset.
 
-The raw dataset is not included in this repository because image datasets can be large and should not be committed to GitHub.
+The raw dataset is not included in this repository.
 
-## Dataset Source
+Download the dataset from the official MVTec source and comply with its dataset terms.
 
-Use the official MVTec AD dataset page to download the dataset.
+## Current Category
 
-MVTec AD is designed for benchmarking anomaly detection methods in industrial inspection. Each category contains defect-free training images and test images containing both normal and defective examples.
-
-## First Project Category
-
-For the first version of this project, use only:
+The current implementation uses:
 
 ```text
 bottle
 ```
 
-Starting with one category keeps the first pipeline easier to debug before expanding to more categories.
-
-## Expected Local Folder Structure
-
-After downloading and extracting the dataset, the expected local structure is:
+## Expected Local Structure
 
 ```text
 data/
@@ -37,30 +29,70 @@ data/
             │   ├── broken_small/
             │   └── contamination/
             └── ground_truth/
+                ├── broken_large/
+                ├── broken_small/
+                └── contamination/
 ```
 
 ## Label Convention
 
-For the first baseline:
-
 ```text
-train/good      -> normal training images
-test/good       -> normal test images
-test/*          -> defective test images, except test/good
+train/good -> normal training image
+test/good  -> normal test image
+test/*     -> defective test image, except test/good
 ```
 
-The baseline classification label will be:
+Binary labels used by the project:
 
 ```text
-good      -> normal
-not good  -> defective
+good             -> normal
+broken_large     -> defective
+broken_small     -> defective
+contamination    -> defective
+```
+
+## Ground-Truth Masks
+
+Defective test images have corresponding masks.
+
+Example:
+
+```text
+test/broken_small/000.png
+ground_truth/broken_small/000_mask.png
+```
+
+Normal images do not have defect masks.
+
+## Dataset Use
+
+### Random Forest Baseline
+
+The supervised development baseline uses manually extracted features from normal and defective images.
+
+### PatchCore
+
+PatchCore uses:
+
+```text
+Training:
+bottle/train/good
+```
+
+and evaluates on:
+
+```text
+bottle/test/good
+bottle/test/broken_large
+bottle/test/broken_small
+bottle/test/contamination
 ```
 
 ## Important
 
-Do not upload raw dataset files to GitHub.
+Do not commit the dataset to GitHub.
 
-The `.gitignore` file should exclude:
+The repository `.gitignore` should exclude:
 
 ```text
 data/raw/
@@ -68,21 +100,13 @@ data/processed/
 *.zip
 *.tar
 *.tar.gz
+*.tar.xz
 ```
 
-## Planned Dataset Use
+Verify before committing:
 
-Initial version:
+```bash
+git status --short
+```
 
-- use only the `bottle` category
-- build a simple image loading and preprocessing pipeline
-- generate a sample image grid
-- train a simple baseline model
-- evaluate normal vs defective classification
-
-Later versions:
-
-- add more MVTec AD categories
-- compare baseline model with anomaly-detection methods
-- add PatchCore or PaDiM using Anomalib
-- generate anomaly heatmaps
+Raw images should not appear in the output.

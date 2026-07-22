@@ -2,152 +2,198 @@
 
 ## Purpose
 
-This document describes the validation approach for the industrial image defect detection project.
+This document describes the validation strategy for the industrial image defect-detection project.
 
-The first baseline model uses simple image-level features and a supervised Random Forest classifier. This is useful for checking that the full image-processing and machine-learning pipeline works, but it is not the final industrial anomaly-detection approach.
+The project contains:
 
-## Current Baseline Validation
+1. a supervised Random Forest development baseline
+2. a PatchCore model trained only on normal images
 
-Current setup:
+PatchCore is the primary industrial anomaly-detection workflow.
 
-- Dataset: MVTec AD
-- Category: bottle
-- Task: binary classification
-- Labels: normal and defective
-- Features: colour, grayscale, histogram, and edge-based image features
-- Model: Random Forest classifier
-- Split: stratified random train/test split over image-level features
+## Dataset Structure
 
-## Main Limitation
-
-The current baseline is a supervised classifier trained using both normal and defective images.
-
-This is useful as a development baseline, but many industrial anomaly-detection systems are designed differently:
+Dataset:
 
 ```text
-train only on normal images
-detect deviations from normal behaviour at test time
+MVTec AD bottle
 ```
 
-A future version should therefore use anomaly-detection methods such as PatchCore or PaDiM.
-
-## Why This Baseline Still Matters
-
-The first baseline confirms that the full pipeline works:
+Training:
 
 ```text
-load images -> preprocess -> extract features -> train model -> evaluate -> predict
+train/good
 ```
 
-It also creates a simple benchmark before moving to stronger industrial anomaly-detection methods.
+Testing:
 
-## Improved Validation Plan
+```text
+test/good
+test/broken_large
+test/broken_small
+test/contamination
+```
 
-### Stage 1: Supervised Baseline
+Pixel-level ground-truth masks are available for defective test images.
 
-Purpose:
+## Supervised Baseline Validation
 
-- confirm end-to-end image pipeline
-- test image loading and preprocessing
-- establish a simple benchmark
-
-Status:
-
-- completed as first baseline
-
-### Stage 2: Train/Test Split by MVTec Structure
+The Random Forest baseline uses a random image-level train/test split across the available images.
 
 Purpose:
 
-- train using `train/good`
-- evaluate using `test/good` and test defect folders
+- verify data loading
+- verify preprocessing
+- test handcrafted features
+- test training and prediction scripts
+- establish an interpretable benchmark
 
-Expected benefit:
+Limitation:
 
-- closer to the official anomaly-detection structure of MVTec AD
+The baseline uses defective examples during training and does not follow the normal-only MVTec anomaly-detection protocol.
 
-### Stage 3: Unsupervised Anomaly Detection
+It should not be interpreted as the primary benchmark result.
 
-Purpose:
+## PatchCore Validation
 
-- train only on normal images
-- detect defective images as anomalies
+PatchCore is trained only on normal training images.
 
-Candidate methods:
+The evaluation uses:
 
-- PatchCore
-- PaDiM
-- autoencoder baseline
+- unseen normal test images
+- broken-large defects
+- broken-small defects
+- contamination defects
 
-Expected benefit:
+Outputs include:
 
-- closer to industrial visual-inspection use cases where all defect types may not be known during training
+- image-level anomaly score
+- image-level predicted label
+- pixel-level anomaly map
+- pixel-level predicted mask
 
-### Stage 4: Defect-Type Evaluation
+## Current Metrics
 
-Purpose:
+| Metric | Result |
+|---|---:|
+| Image AUROC | 1.000 |
+| Image F1-score | 0.992 |
+| Pixel AUROC | 0.976 |
+| Pixel F1-score | 0.654 |
+| Image-level accuracy | 0.976 |
+| Correct test images | 81 / 83 |
 
-- evaluate performance separately for each defect type
+## Error Analysis
 
-For bottle:
+Two image-level errors were observed:
 
-- broken_large
-- broken_small
-- contamination
+### False Positive
 
-Expected benefit:
+One normal image was classified as defective.
 
-- shows which defect types are easy or difficult for the model
+Interpretation:
 
-### Stage 5: More MVTec Categories
+- normal appearance variation produced a comparatively high anomaly score
+- the selected threshold is sensitive to some valid normal variation
 
-Purpose:
+### False Negative
 
-- test whether the approach generalizes beyond one object category
+One contamination image was classified as normal.
 
-Possible next categories:
+Interpretation:
 
-- metal_nut
-- screw
-- cable
-- capsule
+- the contamination defect was comparatively subtle
+- its anomaly score remained close to the decision threshold
 
-Expected benefit:
+## Threshold Validation
 
-- stronger evidence of general image-defect detection ability
+The decision threshold must not be tuned directly on the final test set.
 
-## Validation Metrics
+A stronger approach would create a separate validation strategy using:
 
-Classification metrics:
+- held-out normal images
+- synthetic anomalies
+- an additional validation category
+- cross-category threshold analysis
 
-- accuracy
+The final test set should remain untouched until the threshold and model configuration have been selected.
+
+## Image-Level Validation
+
+Current image-level checks:
+
+- AUROC
 - precision
 - recall
 - F1-score
+- accuracy
 - confusion matrix
+- false positives
+- false negatives
+- anomaly-score distribution
 
-Anomaly-detection metrics for future versions:
+## Pixel-Level Validation
 
-- image-level AUROC
-- pixel-level AUROC
-- anomaly score distribution
-- false-positive examples
-- false-negative examples
-- defect localization heatmaps
+Current pixel-level checks:
 
-## Deployment-Relevant Checks
+- pixel AUROC
+- pixel F1-score
+- anomaly heatmaps
+- overlay visualization
+- comparison with ground-truth masks
 
-Before any real industrial use, additional checks would be needed:
+The lower pixel F1-score indicates that localization thresholding and mask precision require improvement.
 
+## Defect-Type Validation
+
+The current report includes examples from:
+
+- broken large
+- broken small
+- contamination
+
+Future reports should calculate metrics separately for each defect type rather than only overall.
+
+## Robustness Validation
+
+Future robustness experiments should test:
+
+- brightness changes
+- contrast changes
+- colour shifts
+- Gaussian noise
+- blur
+- image compression
+- small rotations
+- translations
+- crop changes
+- camera-position changes
+
+These tests should distinguish acceptable imaging variation from actual defects.
+
+## Deployment-Relevant Validation
+
+Before production use, the following would be required:
+
+- representative production images
 - camera calibration
-- lighting variation tests
-- unseen product batches
-- image blur/noise robustness
-- threshold stability
-- monitoring for data drift
-- human expert review
-- integration with inspection workflow
+- lighting control
+- threshold calibration
+- latency measurements
+- failure handling
+- human review workflow
+- monitoring for drift
+- audit logging
+- periodic revalidation
 
-## Summary
+## Current Conclusion
 
-The current baseline is a working proof of pipeline. The next goal is not only better accuracy, but a more realistic industrial anomaly-detection validation setup.
+PatchCore provides strong image-level anomaly detection on the MVTec AD bottle benchmark.
+
+The main unresolved issues are:
+
+- independent threshold validation
+- exact pixel-level localization
+- robustness beyond the controlled benchmark
+- generalization to additional object categories
+- production deployment validation

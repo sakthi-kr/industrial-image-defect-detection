@@ -2,199 +2,237 @@
 
 ## Goal
 
-The goal is to build a reproducible machine-learning workflow for industrial image defect detection and progressively move from a simple supervised baseline to a more realistic anomaly-detection setup.
+Develop a reproducible industrial image anomaly-detection workflow and evaluate both image-level defect detection and pixel-level defect localization.
 
-## Current Experiment: Baseline Random Forest Classifier
+## Completed Experiment 1: Dataset Pipeline
 
-### Dataset
+Completed:
 
-MVTec AD `bottle` category.
+- MVTec AD bottle loading
+- split and defect-type indexing
+- binary-label generation
+- mask-path discovery
+- dataset summary generation
+- normal and defective sample visualization
 
-### Task
+## Completed Experiment 2: Image Preprocessing
 
-Binary classification:
+Completed:
+
+- RGB conversion
+- image resizing
+- normalization
+- grayscale conversion
+- preprocessing preview generation
+
+## Completed Experiment 3: Supervised Baseline
+
+Model:
 
 ```text
-normal image    -> normal
-defective image -> defective
+RandomForestClassifier
 ```
 
-### Features
+Features:
 
-The current baseline uses manually extracted image features.
-
-Colour features:
-
-- RGB channel means
-- RGB channel standard deviations
-- RGB channel min/max values
+- RGB statistics
 - HSV statistics
-
-Grayscale features:
-
-- mean
-- standard deviation
-- percentiles
-- entropy
+- grayscale statistics
 - histogram bins
-
-Edge/texture features:
-
-- Sobel gradient statistics
+- Sobel gradients
 - edge density
 - Laplacian variance
 
-### Model
+Purpose:
 
-Random Forest classifier.
+- verify the end-to-end classical ML pipeline
+- create an interpretable development benchmark
 
-### Purpose
+Limitation:
 
-This experiment checks whether simple image statistics can separate normal and defective bottle images and confirms that the full pipeline works.
+The model uses both normal and defective examples and is not the primary anomaly-detection method.
 
-### Interpretation
+## Completed Experiment 4: PatchCore
 
-The result is useful as a baseline, but it should not be treated as final industrial anomaly-detection performance.
+Configuration:
 
----
+| Parameter | Value |
+|---|---|
+| Dataset | MVTec AD bottle |
+| Backbone | ResNet-18 |
+| Layers | `layer2`, `layer3` |
+| Input size | 224 × 224 |
+| Coreset ratio | 1% |
+| Nearest neighbours | 5 |
+| Accelerator | CPU |
 
-## Experiment 1: Baseline Feature Groups
+Training:
 
-### Question
+- only normal images
+- pretrained CNN feature extraction
+- memory-bank construction
+- reduced coreset sampling
 
-Which simple image features contribute most?
+Results:
 
-### Comparisons
+| Metric | Result |
+|---|---:|
+| Image AUROC | 1.000 |
+| Image F1-score | 0.992 |
+| Pixel AUROC | 0.976 |
+| Pixel F1-score | 0.654 |
+| Image accuracy | 0.976 |
+
+## Completed Experiment 5: Prediction and Error Analysis
+
+Completed:
+
+- full-test-set prediction
+- prediction CSV
+- error-analysis CSV
+- confusion-matrix table
+- anomaly-score distribution
+- false-positive analysis
+- false-negative analysis
+
+Observed errors:
+
+- one normal false positive
+- one contamination false negative
+
+## Completed Experiment 6: Localization Visualization
+
+Completed:
+
+- anomaly maps
+- heatmap overlays
+- ground-truth mask comparison
+- representative normal and defective examples
+
+## Planned Experiment 7: Baseline Feature Ablation
+
+Compare:
 
 - colour features only
-- grayscale/intensity features only
-- edge/texture features only
+- grayscale features only
+- histogram features only
+- edge and texture features only
 - all features combined
 
-### Purpose
+Question:
 
-This helps understand whether defects are mainly captured by colour, intensity, texture, or edge changes.
+Which manually engineered feature groups contribute most to the supervised baseline?
 
----
+## Planned Experiment 8: Classical Model Comparison
 
-## Experiment 2: Classical Model Comparison
-
-### Question
-
-How do different classical models perform on the same extracted features?
-
-### Models
+Compare:
 
 - Logistic Regression
 - Random Forest
 - Support Vector Machine
-- k-Nearest Neighbors
-- Gradient Boosting or XGBoost
+- k-Nearest Neighbours
+- gradient boosting
 
-### Metrics
+Use identical feature tables and evaluation splits.
 
-- accuracy
-- precision
-- recall
-- F1-score
-- confusion matrix
+## Planned Experiment 9: Independent Threshold Validation
 
----
+Develop a validation procedure that does not tune on the final test set.
 
-## Experiment 3: MVTec-Style Anomaly Detection
+Possible approaches:
 
-### Question
+- hold out a subset of normal training images
+- create controlled synthetic anomalies
+- use a separate MVTec category for threshold calibration
+- compare threshold stability across categories
 
-Can the model detect defects after training only on normal images?
+## Planned Experiment 10: Additional Categories
 
-### Method
+Possible categories:
 
-Train on:
+- metal nut
+- cable
+- capsule
+- screw
 
-```text
-bottle/train/good
-```
+Questions:
 
-Evaluate on:
+- does the lightweight PatchCore configuration generalize?
+- which object structures are more difficult?
+- does one decision threshold transfer across categories?
 
-```text
-bottle/test/good
-bottle/test/broken_large
-bottle/test/broken_small
-bottle/test/contamination
-```
+## Planned Experiment 11: Model Comparison
 
-### Candidate Models
+Compare PatchCore with:
 
-- PatchCore
 - PaDiM
-- autoencoder baseline
+- another lightweight anomaly detector
+- optional autoencoder baseline
 
-### Purpose
+Compare:
 
-This is closer to real industrial inspection, where training data may contain mostly normal examples.
+- image AUROC
+- image F1-score
+- pixel AUROC
+- pixel F1-score
+- inference time
+- memory use
+- qualitative localization
 
----
+## Planned Experiment 12: Robustness Testing
 
-## Experiment 4: Defect-Type Error Analysis
+Apply controlled transformations:
 
-### Question
+- brightness changes
+- contrast changes
+- Gaussian noise
+- blur
+- JPEG compression
+- small rotations
+- translations
 
-Which defect types are most difficult?
+Measure:
 
-### Defect Types
+- anomaly-score shift for normal images
+- false-positive rate
+- false-negative rate
+- threshold stability
 
-- broken_large
-- broken_small
-- contamination
+## Planned Experiment 13: Validation Toolkit Integration
 
-### Analysis
+Use reusable validation utilities for:
 
-For each defect type:
+- required result columns
+- missing and infinite values
+- prediction-label checks
+- probability and score-range checks
+- metric-schema checks
+- report generation
+- reproducibility checks
 
-- number of correct predictions
-- number of missed defects
-- confidence or anomaly-score distribution
-- visual examples of failures
+## Planned Experiment 14: Inference Prototype
 
----
+Build a simple interface that:
 
-## Experiment 5: Heatmap-Based Localization
-
-### Question
-
-Can the model localize defective regions, not just classify the image?
-
-### Method
-
-Use anomaly-detection methods that generate heatmaps.
-
-Candidate methods:
-
-- PatchCore
-- PaDiM
-
-### Expected Outputs
-
-- anomaly heatmaps
-- image-level anomaly scores
-- comparison with ground-truth masks
-
----
+- accepts one image
+- returns normal or defective
+- reports anomaly score
+- displays anomaly heatmap
+- documents model limitations
 
 ## Final Deliverables
 
-The final project should include:
+The mature project should contain:
 
-- clean image data loading
-- preprocessing pipeline
-- sample image visualizations
-- baseline classifier
-- confusion matrix
-- feature importance
-- prediction script
-- basic tests
-- validation strategy
-- experiment plan
+- reproducible data loading
+- supervised baseline
+- normal-only anomaly detector
+- image-level evaluation
+- pixel-level evaluation
+- heatmaps
+- error analysis
+- robustness checks
+- reusable validation checks
 - model card
-- future anomaly-detection extension
+- experiment documentation
+- inference prototype

@@ -1,132 +1,177 @@
 # Model Card
 
-## Model Name
+## Project
 
-Baseline Random Forest Image Defect Classifier
+Industrial Image Defect Detection
+
+## Models
+
+Two models are included.
+
+### Supervised Baseline
+
+A Random Forest classifier trained on manually extracted image features.
+
+Feature groups:
+
+- RGB statistics
+- HSV statistics
+- grayscale statistics
+- grayscale histograms
+- Sobel gradient features
+- edge density
+- Laplacian variance
+
+This model is retained as a simple and interpretable development baseline.
+
+### PatchCore Anomaly Detector
+
+A normal-only anomaly-detection model using pretrained ResNet-18 patch embeddings.
+
+Configuration:
+
+| Parameter | Value |
+|---|---|
+| Backbone | ResNet-18 |
+| Feature layers | `layer2`, `layer3` |
+| Image size | 224 × 224 |
+| Coreset ratio | 1% |
+| Nearest neighbours | 5 |
+| Execution | CPU |
+
+PatchCore is the primary industrial anomaly-detection model in this project.
 
 ## Problem
 
-Classify industrial product images as normal or defective.
+Identify whether an industrial bottle image is normal or defective and localize regions that differ from normal training examples.
 
 ## Dataset
 
-MVTec AD industrial anomaly detection dataset.
+MVTec AD `bottle` category.
 
-Current category:
+Training data:
 
-- bottle
+- 209 normal images
+
+Test data:
+
+- 83 normal and defective images
+- defect types: broken large, broken small, and contamination
+- pixel-level masks for defective samples
 
 ## Intended Use
 
-This model is intended as an educational and portfolio project for industrial visual inspection and image-based defect detection.
+This project is intended for:
 
-It demonstrates:
-
-- image loading
-- image preprocessing
-- feature extraction
-- baseline machine-learning classification
-- model evaluation
-- prediction scripting
-- basic testing and validation
+- applied machine-learning learning
+- industrial anomaly-detection experimentation
+- visual-inspection prototyping
+- portfolio demonstration
+- testing and validation workflow development
 
 ## Not Intended For
 
-This model is not intended for real industrial quality-control decisions.
+The models are not intended for direct production quality-control decisions.
 
-It has not been validated on:
+They have not been validated on:
 
-- real factory camera data
-- changing lighting conditions
-- unseen product batches
-- different camera angles
-- production-line noise
-- deployment-time data drift
-
-## Model Type
-
-Two models are currently included:
-
-1. A supervised Random Forest baseline trained on manually extracted colour, intensity, histogram, and edge features.
-2. A PatchCore anomaly-detection model trained only on normal images using ResNet-18 patch embeddings and a reduced feature-memory coreset.
-
-PatchCore is the primary industrial anomaly-detection model. The Random Forest is retained as a simple, interpretable baseline.
+- real production camera streams
+- unseen factories or machines
+- changing lighting
+- changing camera positions
+- new bottle designs
+- production-line motion blur
+- long-term data drift
 
 ## Input
 
-One industrial product image.
+One RGB bottle image.
 
-The image is:
+PatchCore preprocessing:
 
-- converted to RGB
-- resized to 128 × 128
-- normalized to [0, 1]
-- converted to grayscale for selected features
+- image resizing to 224 × 224
+- pretrained ResNet-18 feature extraction
+- patch embeddings from `layer2` and `layer3`
 
 ## Output
 
-The model outputs:
+PatchCore produces:
 
-- predicted class: normal or defective
-- class probabilities, when available
-- confidence score
-- expected label inferred from folder structure, when available
-
-## Evaluation Metrics
-
-Current evaluation includes:
-
-- accuracy
-- precision
-- recall
-- F1-score
-- confusion matrix
-- feature importance
+- image-level anomaly score
+- predicted normal/defective label
+- pixel-level anomaly map
+- thresholded predicted mask
+- heatmap overlay
 
 ## Main Results
-The PatchCore model was evaluated on 83 MVTec AD bottle test images.
 
-- Image AUROC: 1.000
-- Image F1-score: 0.992
-- Pixel AUROC: 0.976
-- Pixel F1-score: 0.654
-- Image-level prediction accuracy: 81/83, or 97.6%
+PatchCore evaluation on 83 test images:
 
-The main remaining weakness is pixel-level localization precision. One normal image was falsely flagged and one contamination defect was missed at the selected threshold.
-The first baseline produces a working normal-vs-defective classification pipeline for the MVTec AD bottle category.
+| Metric | Result |
+|---|---:|
+| Image AUROC | 1.000 |
+| Image F1-score | 0.992 |
+| Pixel AUROC | 0.976 |
+| Pixel F1-score | 0.654 |
+| Image-level accuracy | 0.976 |
+| Correct images | 81 / 83 |
 
-The result should be interpreted as a development baseline, not as final industrial anomaly-detection performance.
+Observed errors:
+
+- one normal image predicted as defective
+- one contamination image predicted as normal
+
+## Interpretation
+
+Image-level defect ranking and classification are strong.
+
+Pixel-level AUROC is also strong, but pixel F1 is lower. This indicates that the anomaly maps generally identify relevant defective regions while the exact thresholded mask boundaries do not always match the ground-truth masks precisely.
+
+The perfect image AUROC does not mean every image is correctly classified at the selected threshold. AUROC evaluates ranking across thresholds, while accuracy and F1 depend on a specific threshold.
 
 ## Known Limitations
 
-Main limitations:
-
-- only one MVTec AD category used so far
-- supervised baseline uses both normal and defective images
-- not yet trained in a pure anomaly-detection setting
-- no PatchCore or PaDiM model yet
-- no anomaly heatmaps yet
-- no robustness testing under lighting/camera changes
-- no production deployment validation
+- only one MVTec category has been evaluated
+- benchmark data is more controlled than production data
+- the classification threshold was not independently tuned
+- one subtle contamination defect was missed
+- one normal appearance variation caused a false positive
+- exact pixel-level localization requires improvement
+- no robustness testing under controlled image corruptions
+- no production monitoring or drift detection
 
 ## Possible Failure Cases
 
 The model may fail when:
 
-- defects are visually small
-- lighting changes significantly
-- camera position changes
-- product appearance differs from MVTec AD examples
-- defect type was not represented in the baseline training data
-- background conditions differ from the dataset
+- normal appearance varies beyond the training distribution
+- defects are small or low contrast
+- illumination changes significantly
+- image blur obscures local texture
+- camera alignment changes
+- a new bottle design is introduced
+- the background differs from the benchmark
+- the defect resembles normal visual variation
+
+## Ethical and Operational Considerations
+
+A production inspection system should not automatically reject or approve safety-critical products without:
+
+- representative validation
+- expert review
+- calibrated operating thresholds
+- uncertainty handling
+- monitoring
+- fallback procedures
+- audit logging
 
 ## Future Improvements
 
-- train anomaly-detection model using only normal images
-- add PatchCore or PaDiM
-- generate anomaly localization heatmaps
-- compare defect-type performance
-- add more MVTec AD categories
-- add threshold analysis
-- add model monitoring and data-drift checks
-- build a simple inference demo
+- evaluate more MVTec categories
+- compare PatchCore with PaDiM
+- improve pixel-level thresholding
+- introduce a separate validation set
+- evaluate by defect type
+- test lighting, blur, noise, and geometric transformations
+- add monitoring and drift checks
+- build a simple inference interface

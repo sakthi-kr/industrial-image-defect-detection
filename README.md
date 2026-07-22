@@ -2,11 +2,20 @@
 
 ## Summary
 
-This project develops an industrial image defect-detection pipeline using the MVTec AD `bottle` category. The current version includes image loading, preprocessing, sample visualization, feature extraction, a Random Forest baseline classifier, evaluation, prediction scripting, tests, and validation planning.
+This project develops an industrial image defect-detection pipeline using the MVTec AD `bottle` category.
+
+It includes two approaches:
+
+1. A supervised Random Forest baseline using manually extracted image features.
+2. A PatchCore anomaly-detection model trained only on normal images.
+
+The workflow covers image loading, preprocessing, feature extraction, model development, anomaly scoring, image- and pixel-level evaluation, localization heatmaps, error analysis, prediction reporting, testing, and documented validation limitations.
 
 ## Motivation
 
-Industrial inspection often relies on image data to identify defective parts, surface damage, contamination, or production issues. This project explores image-based machine learning as a practical AI/ML workflow for industrial visual inspection and quality control.
+Industrial inspection often relies on image data to identify defective parts, contamination, surface damage, and production issues.
+
+This project explores image-based machine learning as a practical workflow for industrial visual inspection and quality control. It progresses from a simple interpretable baseline to a more realistic normal-only anomaly-detection method.
 
 ## Dataset
 
@@ -22,51 +31,88 @@ Current category:
 bottle
 ```
 
-The dataset is not included in this repository. Download and folder-structure instructions are provided in:
+The raw dataset is not included in this repository.
+
+Download and local folder-structure instructions are provided in:
 
 ```text
 data/README.md
 ```
 
+The current dataset contains:
+
+| Split | Images |
+|---|---:|
+| Normal training images | 209 |
+| Test images | 83 |
+
+The test set contains:
+
+- normal bottle images
+- broken-large defects
+- broken-small defects
+- contamination defects
+- pixel-level ground-truth masks for defective images
+
 ## Problem Definition
 
-The first baseline treats the task as binary classification:
+The project implements two related approaches.
+
+### 1. Supervised Development Baseline
 
 ```text
-normal image     -> normal
-defective image  -> defective
+normal and defective images
+            ↓
+handcrafted image features
+            ↓
+Random Forest classification
+            ↓
+normal or defective
 ```
 
-Later versions will move toward industrial anomaly detection:
+The supervised baseline uses a random image-level split across the available images. It is retained as a pipeline-development benchmark and should not be interpreted as an official MVTec anomaly-detection evaluation.
+
+### 2. PatchCore Anomaly Detection
 
 ```text
-train only on normal images
-detect deviations from normal appearance at test time
+normal training images only
+            ↓
+pretrained CNN patch features
+            ↓
+normal-feature memory bank
+            ↓
+image anomaly score
+and localization heatmap
 ```
+
+PatchCore is closer to an industrial inspection scenario in which representative normal images are available but all possible defect types may not be known during training.
 
 ## Sample Images
 
-The first version uses the MVTec AD `bottle` category, including normal images and several defect types.
+The MVTec AD `bottle` category contains normal images and several defect types.
 
 ![Sample Images](results/sample_images.png)
 
 ## Preprocessing Preview
 
-Images are converted to RGB, resized to `128 × 128`, normalized to `[0, 1]`, and converted to grayscale for simple baseline feature extraction.
+For the classical baseline, images are converted to RGB, resized to `128 × 128`, normalized to `[0, 1]`, and converted to grayscale for selected feature calculations.
 
 ![Preprocessing Preview](results/preprocessing_preview.png)
 
-## Current Baseline Method
+# Supervised Baseline
 
-The current baseline uses manually extracted image features and a Random Forest classifier.
+## Baseline Method
+
+The supervised baseline uses manually extracted image features.
 
 Feature groups:
 
-- RGB colour statistics
+- RGB channel statistics
 - HSV colour statistics
 - grayscale intensity statistics
 - grayscale histogram features
-- Sobel edge features
+- Sobel gradient features
+- edge density
 - Laplacian variance
 
 Model:
@@ -77,9 +123,18 @@ RandomForestClassifier
 
 ## Baseline Results
 
-The first baseline uses simple image statistics, colour features, grayscale histogram features, and edge-based features with a Random Forest classifier.
+The baseline verifies that the full classical machine-learning pipeline works:
 
-This is a supervised development baseline for checking the full image-processing and model-training pipeline. It should not be interpreted as the final industrial anomaly-detection model.
+```text
+load images
+→ preprocess
+→ extract features
+→ train classifier
+→ evaluate
+→ predict
+```
+
+It is not considered the primary industrial anomaly-detection result because it uses both normal and defective images.
 
 ### Baseline Confusion Matrix
 
@@ -89,7 +144,7 @@ This is a supervised development baseline for checking the full image-processing
 
 ![Baseline Feature Importance](results/feature_importance_baseline.png)
 
-Current baseline result files:
+Baseline outputs:
 
 ```text
 results/baseline_metrics.json
@@ -97,16 +152,26 @@ results/baseline_classification_report.txt
 results/baseline_evaluation_summary.json
 results/confusion_matrix_baseline.png
 results/feature_importance_baseline.png
+results/feature_importance_baseline.csv
 ```
 
+# PatchCore Anomaly-Detection Upgrade
 
-## PatchCore Anomaly-Detection Upgrade
+## Method
 
-The second version uses PatchCore, an industrial anomaly-detection method trained only on normal MVTec AD bottle images.
+The second version uses PatchCore, an industrial anomaly-detection method trained only on normal bottle images.
 
-Unlike the supervised baseline, PatchCore does not require defective training examples. It extracts patch-level features using a pretrained CNN backbone, builds a representative memory bank from normal images, and assigns anomaly scores by comparing test-image patches with that normal-feature memory.
+PatchCore extracts patch-level features using a pretrained CNN backbone, constructs a representative memory bank from normal images, and scores test-image patches according to their distance from the normal-feature memory.
 
-### Configuration
+The resulting outputs include:
+
+- image-level anomaly score
+- normal/defective prediction
+- pixel-level anomaly map
+- heatmap overlay
+- comparison with the ground-truth defect mask
+
+## PatchCore Configuration
 
 | Parameter | Value |
 |---|---|
@@ -116,12 +181,14 @@ Unlike the supervised baseline, PatchCore does not require defective training ex
 | Backbone | ResNet-18 |
 | Feature layers | `layer2`, `layer3` |
 | Input size | 224 × 224 |
-| Coreset ratio | 1% |
+| Coreset sampling ratio | 1% |
 | Nearest neighbours | 5 |
 | Execution | CPU |
 | Training and evaluation time | Approximately 59 seconds |
 
-### Quantitative Results
+A reduced coreset and ResNet-18 backbone were selected to provide a lightweight configuration suitable for local CPU execution.
+
+## PatchCore Results
 
 | Metric | Result |
 |---|---:|
@@ -129,77 +196,113 @@ Unlike the supervised baseline, PatchCore does not require defective training ex
 | Image F1-score | 0.992 |
 | Pixel AUROC | 0.976 |
 | Pixel F1-score | 0.654 |
-| Image-level accuracy from prediction report | 0.976 |
+| Image-level prediction accuracy | 0.976 |
 | Correct test images | 81 / 83 |
+| False positives | 1 |
+| False negatives | 1 |
 
-The image-level results are strong, but exact defect localization remains less accurate than image-level detection. The prediction report found one false positive and one false negative.
+Image-level defect detection is strong. Exact pixel-level localization is less accurate, as shown by the lower pixel F1-score.
 
-### Anomaly Heatmaps
+Image AUROC and image-level accuracy measure different properties. AUROC evaluates ranking across possible thresholds, while accuracy uses one selected decision threshold.
 
-The figure compares original images, predicted anomaly maps, heatmap overlays, and pixel-level ground-truth masks.
+## Anomaly Heatmaps
+
+The following figure compares:
+
+1. original image
+2. predicted anomaly heatmap
+3. heatmap overlay
+4. pixel-level ground-truth mask
 
 ![PatchCore Anomaly Heatmaps](results/patchcore_example_heatmaps.png)
 
-### Anomaly-Score Distribution
+The broken-large and broken-small examples show strong alignment between the predicted high-anomaly regions and the annotated defect areas.
 
-Normal and defective images are largely separated, with a small overlap near the selected classification threshold.
+## Anomaly-Score Distribution
 
 ![PatchCore Score Distribution](results/patchcore_score_distribution.png)
 
-### Error Analysis
+Normal and defective images are largely separated. A small overlap around the selected decision threshold produced two image-level errors.
 
-The two observed image-level errors were:
+## Error Analysis
 
-- one normal image classified as defective
+The two observed errors were:
+
+- one normal bottle image classified as defective
 - one contamination image classified as normal
 
-This indicates sensitivity to normal appearance variation and difficulty detecting a comparatively subtle contamination example.
+The false positive indicates sensitivity to variation among normal bottle appearances.
 
-Detailed outputs:
+The false negative indicates that a comparatively subtle contamination defect can remain close to the decision threshold.
+
+The decision threshold has not been retuned on the test set. Adjusting it using the same test data would produce an optimistically biased result.
+
+Detailed PatchCore outputs:
 
 ```text
 results/patchcore_predictions.csv
 results/patchcore_error_analysis.csv
 results/patchcore_report.json
 results/patchcore_confusion_matrix.csv
+results/patchcore_example_heatmaps.png
+results/patchcore_score_distribution.png
 ```
 
-### Interpretation
+## Baseline and PatchCore Comparison
 
-The supervised Random Forest baseline and PatchCore results are not directly comparable. The baseline trains using both normal and defective examples, while PatchCore trains only on normal images and therefore represents a more realistic industrial anomaly-detection workflow.
+The two approaches are not directly equivalent.
 
-## Project Structure
+| Baseline | PatchCore |
+|---|---|
+| Supervised classification | Normal-only anomaly detection |
+| Uses normal and defective examples | Uses only normal training images |
+| Handcrafted features | Pretrained CNN patch embeddings |
+| Binary image prediction | Image score and pixel-level heatmap |
+| Development benchmark | Primary industrial anomaly-detection workflow |
+
+The Random Forest is retained as a simple, interpretable benchmark. PatchCore is the more realistic industrial anomaly-detection model.
+
+# Repository Structure
 
 ```text
 industrial-image-defect-detection/
 ├── data/
 │   └── README.md
 ├── docs/
+│   ├── README.md
 │   ├── model_card.md
 │   ├── validation_strategy.md
 │   └── experiment_plan.md
 ├── notebooks/
 ├── results/
 ├── src/
+│   ├── __init__.py
 │   ├── data_loader.py
 │   ├── visualize.py
 │   ├── preprocess.py
 │   ├── features.py
 │   ├── train.py
 │   ├── evaluate.py
-│   └── predict.py
+│   ├── predict.py
+│   ├── check_anomalib_setup.py
+│   ├── train_patchcore.py
+│   ├── inspect_patchcore_prediction.py
+│   └── generate_patchcore_report.py
 ├── tests/
 │   ├── test_data_loader.py
 │   ├── test_preprocess.py
 │   ├── test_features.py
 │   └── test_prediction_output.py
+├── pytest.ini
 ├── requirements.txt
 └── README.md
 ```
 
-## How to Run
+# How to Run
 
-### 1. Create and activate a virtual environment
+## Classical Baseline Environment
+
+### 1. Create the environment
 
 ```bash
 python -m venv .venv
@@ -209,53 +312,53 @@ source .venv/Scripts/activate
 ### 2. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-### 3. Load dataset index
+### 3. Create the dataset index
 
 ```bash
 python src/data_loader.py
 ```
 
-This creates:
+Outputs:
 
 ```text
 results/dataset_index.csv
 results/dataset_summary.csv
 ```
 
-### 4. Generate sample image grid
+### 4. Generate the sample grid
 
 ```bash
 python src/visualize.py
 ```
 
-This creates:
+Output:
 
 ```text
 results/sample_images.png
 ```
 
-### 5. Run preprocessing preview
+### 5. Generate the preprocessing preview
 
 ```bash
 python src/preprocess.py
 ```
 
-This creates:
+Output:
 
 ```text
 results/preprocessing_preview.png
 ```
 
-### 6. Extract image features
+### 6. Extract baseline image features
 
 ```bash
 python src/features.py
 ```
 
-This creates:
+Outputs:
 
 ```text
 results/image_feature_table.csv
@@ -263,13 +366,13 @@ results/image_feature_preview.csv
 results/image_feature_summary.csv
 ```
 
-### 7. Train baseline classifier
+### 7. Train the Random Forest baseline
 
 ```bash
 python src/train.py
 ```
 
-This creates:
+Outputs:
 
 ```text
 models/baseline_random_forest_image_classifier.joblib
@@ -278,13 +381,13 @@ results/baseline_classification_report.txt
 results/baseline_feature_columns.json
 ```
 
-### 8. Evaluate baseline classifier
+### 8. Evaluate the baseline
 
 ```bash
 python src/evaluate.py
 ```
 
-This creates:
+Outputs:
 
 ```text
 results/confusion_matrix_baseline.png
@@ -295,95 +398,186 @@ results/baseline_evaluation_summary.json
 ### 9. Predict one image
 
 ```bash
-python src/predict.py --image data/raw/mvtec_ad/bottle/test/good/000.png
+python src/predict.py \
+  --image data/raw/mvtec_ad/bottle/test/good/000.png
 ```
 
-Example output:
+## PatchCore Environment
 
-```text
-Predicted label: normal
-```
+A separate Python 3.10 environment is used for Anomalib.
 
-### 10. Run tests
+On Windows, a short environment path is recommended to avoid long-path installation errors.
+
+### 10. Create the Anomalib environment
 
 ```bash
+"/c/Program Files/Python310/python.exe" \
+  -m venv /c/venvs/anom310
+
+source /c/venvs/anom310/Scripts/activate
+
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install "anomalib[cu130]==2.5.1"
+```
+
+On the current machine, the installed PyTorch build is CPU-only and PatchCore is explicitly executed on CPU.
+
+### 11. Check the Anomalib setup
+
+```bash
+python src/check_anomalib_setup.py
+```
+
+### 12. Build the PatchCore memory bank and evaluate
+
+```bash
+python src/train_patchcore.py
+```
+
+### 13. Inspect one prediction object
+
+```bash
+python src/inspect_patchcore_prediction.py
+```
+
+### 14. Generate the final PatchCore report
+
+```bash
+python src/generate_patchcore_report.py
+```
+
+Outputs:
+
+```text
+results/patchcore_predictions.csv
+results/patchcore_error_analysis.csv
+results/patchcore_report.json
+results/patchcore_confusion_matrix.csv
+results/patchcore_example_heatmaps.png
+results/patchcore_score_distribution.png
+```
+
+## Run Tests
+
+Activate the classical baseline environment:
+
+```bash
+source .venv/Scripts/activate
 pytest
 ```
 
-## Testing
+# Testing
 
-Tests are included for:
+Tests currently cover:
 
-- dataset loading
-- image path discovery
+- category-folder validation
+- image-path discovery
+- dataset record creation
 - label extraction
 - RGB image loading
-- resizing
-- normalization
+- image resizing
+- pixel normalization
 - grayscale conversion
 - feature extraction
+- histogram validation
 - prediction output structure
+- class-probability checks
 
-## Validation Note
+The PatchCore workflow is currently validated through setup, training, prediction-inspection, and report-generation scripts. Reusable tests for PatchCore result schemas will be added through the ML validation toolkit.
 
-The current baseline is a first development version. It is not yet a full industrial anomaly-detection solution.
+# Validation
 
-Detailed validation and experiment plans are documented here:
+The project now contains:
+
+- a supervised development baseline
+- a normal-only PatchCore anomaly detector
+- image-level metrics
+- pixel-level metrics
+- anomaly heatmaps
+- ground-truth mask comparisons
+- anomaly-score distributions
+- prediction-level error analysis
+- documented limitations
+
+Detailed documentation:
 
 ```text
 docs/validation_strategy.md
 docs/experiment_plan.md
+docs/model_card.md
 ```
 
-Main limitations:
+Current limitations:
 
-- only one MVTec AD category used so far
-- baseline is supervised, not pure anomaly detection
-- model uses manually extracted features
-- no anomaly heatmaps yet
-- no robustness testing under changing camera or lighting conditions
-- no production deployment validation
+- only the MVTec AD `bottle` category has been evaluated
+- benchmark images are more controlled than production camera data
+- image-level detection is stronger than exact pixel-level localization
+- one normal image was falsely flagged
+- one contamination defect was missed
+- the threshold has not been tuned on an independent validation set
+- lighting, blur, noise, camera position, and product-batch robustness have not yet been tested
+- no production deployment or drift monitoring has been implemented
 
-## Experiment Roadmap
+# Experiment Roadmap
 
-Planned experiment stages:
+## Completed
 
-1. Baseline Random Forest model on manually extracted image features
-2. Feature-group comparison: colour vs grayscale vs edge features
-3. Classical model comparison: Logistic Regression, Random Forest, SVM, and gradient boosting
-4. MVTec-style anomaly detection: train only on normal images
-5. PatchCore or PaDiM anomaly-detection model
-6. Defect-type error analysis
-7. Anomaly heatmap generation and comparison with ground-truth masks
+1. Dataset loading and image inspection
+2. Image preprocessing pipeline
+3. Random Forest baseline with handcrafted features
+4. Baseline classification evaluation
+5. Normal-only PatchCore anomaly detection
+6. Image-level AUROC and F1 evaluation
+7. Pixel-level AUROC and F1 evaluation
+8. Prediction-level error analysis
+9. Anomaly heatmap generation
+10. Ground-truth mask comparison
+11. Anomaly-score distribution analysis
 
-The focus is not only on accuracy, but on making the validation more realistic and industrially meaningful.
+## Planned
 
-## Model Card
+1. Compare baseline feature groups
+2. Compare additional classical models
+3. Evaluate PatchCore on additional MVTec categories
+4. Tune the decision threshold using a separate validation strategy
+5. Compare PatchCore with PaDiM or another anomaly detector
+6. Test robustness to lighting, blur, noise, and image transformations
+7. Integrate reusable validation utilities
+8. Build a simple user-facing inference prototype
+9. Add deployment-oriented monitoring and drift checks
 
-A model card is provided in:
+# Model Card
+
+The model card is available at:
 
 ```text
 docs/model_card.md
 ```
 
-## Limitations
+# Limitations
 
-This project is for applied learning and portfolio demonstration. It is not intended for real industrial inspection decisions without:
+This repository is an applied-learning and portfolio project.
 
-- more extensive validation
-- testing on unseen production data
-- robustness checks
-- expert review
+It is not intended for real industrial inspection decisions without:
+
+- testing on representative production data
+- independent threshold validation
+- camera and lighting calibration
+- robustness evaluation
+- domain-expert review
 - deployment monitoring
+- failure-handling procedures
 
-## Future Improvements
+# Future Improvements
 
 Planned extensions:
 
-- add PatchCore or PaDiM using Anomalib
-- train only on normal images
-- generate anomaly localization heatmaps
-- evaluate image-level and pixel-level anomaly detection
-- add more MVTec AD categories
-- add a simple inference demo
-- connect validation utilities from the ML testing and validation toolkit
+- evaluate more MVTec AD object categories
+- compare PatchCore with PaDiM
+- improve pixel-level localization
+- introduce an independent validation split
+- test robustness under controlled image corruptions
+- analyze performance separately by defect type
+- add a simple inference interface
+- integrate the ML testing and validation toolkit
+- add model monitoring and data-drift checks
