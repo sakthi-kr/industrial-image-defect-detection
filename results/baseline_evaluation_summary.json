@@ -1,0 +1,33 @@
+{
+    "model_type": "RandomForestClassifier",
+    "task": "binary_image_defect_classification",
+    "n_test_samples": 73,
+    "classification_report": {
+        "defective": {
+            "precision": 0.8181818181818182,
+            "recall": 0.5625,
+            "f1-score": 0.6666666666666666,
+            "support": 16.0
+        },
+        "normal": {
+            "precision": 0.8870967741935484,
+            "recall": 0.9649122807017544,
+            "f1-score": 0.9243697478991597,
+            "support": 57.0
+        },
+        "accuracy": 0.8767123287671232,
+        "macro avg": {
+            "precision": 0.8526392961876833,
+            "recall": 0.7637061403508771,
+            "f1-score": 0.7955182072829132,
+            "support": 73.0
+        },
+        "weighted avg": {
+            "precision": 0.8719921263005664,
+            "recall": 0.8767123287671232,
+            "f1-score": 0.8678868807797092,
+            "support": 73.0
+        }
+    },
+    "validation_note": "This baseline uses a stratified random split over image-level features. It is useful for checking the end-to-end supervised baseline pipeline, but it is not the final industrial anomaly-detection setup. A more realistic anomaly-detection version should train only on normal training images and evaluate on normal and defective test images."
+}

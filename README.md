@@ -110,6 +110,29 @@ The final project should include:
 - reproducible scripts
 - basic tests
 
+## Baseline Results
+
+The first baseline uses simple image statistics, colour features, grayscale histogram features, and edge-based features with a Random Forest classifier.
+
+This is a supervised development baseline for checking the full image-processing and model-training pipeline. It should not be interpreted as the final industrial anomaly-detection model.
+
+### Baseline Confusion Matrix
+
+![Baseline Confusion Matrix](results/confusion_matrix_baseline.png)
+
+### Baseline Feature Importance
+
+![Baseline Feature Importance](results/feature_importance_baseline.png)
+
+Current baseline result files:
+
+```text
+results/baseline_metrics.json
+results/baseline_classification_report.txt
+results/baseline_evaluation_summary.json
+results/confusion_matrix_baseline.png
+results/feature_importance_baseline.png
+
 ## Validation Note
 
 The first version will be a development baseline, not a production-quality inspection system.
