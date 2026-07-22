@@ -1,0 +1,14 @@
+{
+    "image_path": "data\\raw\\mvtec_ad\\bottle\\test\\good\\000.png",
+    "image_name": "000.png",
+    "expected_label_from_folder": "normal",
+    "defect_type_from_folder": "good",
+    "predicted_label": "normal",
+    "model_type": "RandomForestClassifier",
+    "task": "binary_image_defect_classification",
+    "probability_by_class": {
+        "defective": 0.056666666666666664,
+        "normal": 0.9433333333333334
+    },
+    "confidence": 0.9433333333333334
+}

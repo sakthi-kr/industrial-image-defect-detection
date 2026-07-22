@@ -1,0 +1,14 @@
+{
+    "image_path": "data\\raw\\mvtec_ad\\bottle\\test\\contamination\\000.png",
+    "image_name": "000.png",
+    "expected_label_from_folder": "defective",
+    "defect_type_from_folder": "contamination",
+    "predicted_label": "defective",
+    "model_type": "RandomForestClassifier",
+    "task": "binary_image_defect_classification",
+    "probability_by_class": {
+        "defective": 0.5566666666666666,
+        "normal": 0.44333333333333336
+    },
+    "confidence": 0.5566666666666666
+}

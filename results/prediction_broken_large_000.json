@@ -1,0 +1,14 @@
+{
+    "image_path": "data\\raw\\mvtec_ad\\bottle\\test\\broken_large\\000.png",
+    "image_name": "000.png",
+    "expected_label_from_folder": "defective",
+    "defect_type_from_folder": "broken_large",
+    "predicted_label": "defective",
+    "model_type": "RandomForestClassifier",
+    "task": "binary_image_defect_classification",
+    "probability_by_class": {
+        "defective": 0.8733333333333333,
+        "normal": 0.12666666666666668
+    },
+    "confidence": 0.8733333333333333
+}
