@@ -39,3 +39,6 @@ Thumbs.db
 # Compressed dataset archives
 *.tar.xz
 .idea/
+
+# Separate Anomalib environment
+.venv-anomalib/
