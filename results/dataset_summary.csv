@@ -1,0 +1,6 @@
+split,defect_type,binary_label,count
+test,broken_large,defective,20
+test,broken_small,defective,22
+test,contamination,defective,21
+test,good,normal,20
+train,good,normal,209
