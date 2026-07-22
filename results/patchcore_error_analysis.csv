@@ -1,0 +1,3 @@
+image_path,file_name,defect_type,true_label,true_numeric,predicted_label,predicted_numeric,pred_score,correct,has_anomaly_map
+data\raw\mvtec_ad\bottle\test\good\006.png,006.png,good,normal,0,defective,1,0.5243843793869019,False,True
+data\raw\mvtec_ad\bottle\test\contamination\003.png,003.png,contamination,defective,1,normal,0,0.5,False,True

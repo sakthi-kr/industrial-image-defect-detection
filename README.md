@@ -99,6 +99,75 @@ results/confusion_matrix_baseline.png
 results/feature_importance_baseline.png
 ```
 
+
+## PatchCore Anomaly-Detection Upgrade
+
+The second version uses PatchCore, an industrial anomaly-detection method trained only on normal MVTec AD bottle images.
+
+Unlike the supervised baseline, PatchCore does not require defective training examples. It extracts patch-level features using a pretrained CNN backbone, builds a representative memory bank from normal images, and assigns anomaly scores by comparing test-image patches with that normal-feature memory.
+
+### Configuration
+
+| Parameter | Value |
+|---|---|
+| Dataset | MVTec AD bottle |
+| Normal training images | 209 |
+| Test images | 83 |
+| Backbone | ResNet-18 |
+| Feature layers | `layer2`, `layer3` |
+| Input size | 224 × 224 |
+| Coreset ratio | 1% |
+| Nearest neighbours | 5 |
+| Execution | CPU |
+| Training and evaluation time | Approximately 59 seconds |
+
+### Quantitative Results
+
+| Metric | Result |
+|---|---:|
+| Image AUROC | 1.000 |
+| Image F1-score | 0.992 |
+| Pixel AUROC | 0.976 |
+| Pixel F1-score | 0.654 |
+| Image-level accuracy from prediction report | 0.976 |
+| Correct test images | 81 / 83 |
+
+The image-level results are strong, but exact defect localization remains less accurate than image-level detection. The prediction report found one false positive and one false negative.
+
+### Anomaly Heatmaps
+
+The figure compares original images, predicted anomaly maps, heatmap overlays, and pixel-level ground-truth masks.
+
+![PatchCore Anomaly Heatmaps](results/patchcore_example_heatmaps.png)
+
+### Anomaly-Score Distribution
+
+Normal and defective images are largely separated, with a small overlap near the selected classification threshold.
+
+![PatchCore Score Distribution](results/patchcore_score_distribution.png)
+
+### Error Analysis
+
+The two observed image-level errors were:
+
+- one normal image classified as defective
+- one contamination image classified as normal
+
+This indicates sensitivity to normal appearance variation and difficulty detecting a comparatively subtle contamination example.
+
+Detailed outputs:
+
+```text
+results/patchcore_predictions.csv
+results/patchcore_error_analysis.csv
+results/patchcore_report.json
+results/patchcore_confusion_matrix.csv
+```
+
+### Interpretation
+
+The supervised Random Forest baseline and PatchCore results are not directly comparable. The baseline trains using both normal and defective examples, while PatchCore trains only on normal images and therefore represents a more realistic industrial anomaly-detection workflow.
+
 ## Project Structure
 
 ```text

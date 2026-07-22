@@ -45,7 +45,12 @@ It has not been validated on:
 
 ## Model Type
 
-Random Forest classifier trained on manually extracted image features.
+Two models are currently included:
+
+1. A supervised Random Forest baseline trained on manually extracted colour, intensity, histogram, and edge features.
+2. A PatchCore anomaly-detection model trained only on normal images using ResNet-18 patch embeddings and a reduced feature-memory coreset.
+
+PatchCore is the primary industrial anomaly-detection model. The Random Forest is retained as a simple, interpretable baseline.
 
 ## Input
 
@@ -79,7 +84,15 @@ Current evaluation includes:
 - feature importance
 
 ## Main Results
+The PatchCore model was evaluated on 83 MVTec AD bottle test images.
 
+- Image AUROC: 1.000
+- Image F1-score: 0.992
+- Pixel AUROC: 0.976
+- Pixel F1-score: 0.654
+- Image-level prediction accuracy: 81/83, or 97.6%
+
+The main remaining weakness is pixel-level localization precision. One normal image was falsely flagged and one contamination defect was missed at the selected threshold.
 The first baseline produces a working normal-vs-defective classification pipeline for the MVTec AD bottle category.
 
 The result should be interpreted as a development baseline, not as final industrial anomaly-detection performance.

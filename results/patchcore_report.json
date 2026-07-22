@@ -1,0 +1,34 @@
+{
+    "model": "Patchcore",
+    "category": "bottle",
+    "backbone": "resnet18",
+    "image_size": [
+        224,
+        224
+    ],
+    "coreset_sampling_ratio": 0.01,
+    "num_neighbors": 5,
+    "accelerator": "cpu",
+    "checkpoint_path": "results\\patchcore_anomalib\\Patchcore\\MVTecAD\\bottle\\v6\\weights\\lightning\\model.ckpt",
+    "n_test_images": 83,
+    "n_normal_images": 20,
+    "n_defective_images": 63,
+    "accuracy": 0.9759036144578314,
+    "precision": 0.9841269841269841,
+    "recall": 0.9841269841269841,
+    "f1_score": 0.9841269841269841,
+    "false_positives": 1,
+    "false_negatives": 1,
+    "n_errors": 2,
+    "normal_score_statistics": {
+        "minimum": 0.36218246817588806,
+        "mean": 0.4132613241672516,
+        "maximum": 0.5243843793869019
+    },
+    "defective_score_statistics": {
+        "minimum": 0.5,
+        "mean": 0.9104873708316258,
+        "maximum": 1.0
+    },
+    "interpretation": "Image-level predictions were generated using a PatchCore model trained only on normal MVTec AD bottle images. Anomaly heatmaps indicate spatial regions that differ from the normal-image feature memory bank."
+}

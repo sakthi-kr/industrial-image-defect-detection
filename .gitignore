@@ -42,3 +42,7 @@ Thumbs.db
 
 # Separate Anomalib environment
 .venv-anomalib/
+
+# Anomalib generated training outputs
+results/patchcore_anomalib/
+*.ckpt
