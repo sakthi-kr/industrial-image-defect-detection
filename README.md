@@ -2,18 +2,24 @@
 
 ## Summary
 
-This project develops an industrial image anomaly-detection pipeline for visual defect detection. The first version will use the MVTec AD `bottle` category to build a reproducible workflow for image loading, preprocessing, baseline modelling, evaluation, and validation.
+This project develops an industrial image defect-detection pipeline using the MVTec AD `bottle` category. The current version includes image loading, preprocessing, sample visualization, feature extraction, a Random Forest baseline classifier, evaluation, prediction scripting, tests, and validation planning.
 
 ## Motivation
 
-Industrial inspection often relies on image data to identify defective parts, surface damage, contamination, or production issues. This project explores image-based machine learning as a practical AI/ML workflow for industrial quality control and visual inspection.
+Industrial inspection often relies on image data to identify defective parts, surface damage, contamination, or production issues. This project explores image-based machine learning as a practical AI/ML workflow for industrial visual inspection and quality control.
 
 ## Dataset
 
-Planned dataset:
+Dataset:
 
 ```text
 MVTec AD industrial anomaly detection dataset
+```
+
+Current category:
+
+```text
+bottle
 ```
 
 The dataset is not included in this repository. Download and folder-structure instructions are provided in:
@@ -22,7 +28,21 @@ The dataset is not included in this repository. Download and folder-structure in
 data/README.md
 ```
 
-The first implementation will use only the `bottle` category.
+## Problem Definition
+
+The first baseline treats the task as binary classification:
+
+```text
+normal image     -> normal
+defective image  -> defective
+```
+
+Later versions will move toward industrial anomaly detection:
+
+```text
+train only on normal images
+detect deviations from normal appearance at test time
+```
 
 ## Sample Images
 
@@ -36,79 +56,24 @@ Images are converted to RGB, resized to `128 × 128`, normalized to `[0, 1]`, an
 
 ![Preprocessing Preview](results/preprocessing_preview.png)
 
-## Problem Definition
+## Current Baseline Method
 
-The first baseline will treat the task as binary classification:
+The current baseline uses manually extracted image features and a Random Forest classifier.
 
-```text
-normal image     -> good
-defective image  -> anomaly/defect
-```
+Feature groups:
 
-Later versions may use anomaly-detection methods that train only on normal images and detect deviations at test time.
+- RGB colour statistics
+- HSV colour statistics
+- grayscale intensity statistics
+- grayscale histogram features
+- Sobel edge features
+- Laplacian variance
 
-## Planned Methods
-
-Version 1: Simple baseline
-
-- load image paths and labels
-- inspect normal and defective image examples
-- resize images
-- extract simple image features
-- train a baseline classifier
-- evaluate with classification metrics and confusion matrix
-
-Version 2: Industrial anomaly detection
-
-- use PatchCore or PaDiM
-- train using normal images
-- predict anomaly scores on test images
-- generate anomaly localization heatmaps
-
-Version 3: Testing and validation
-
-- add preprocessing tests
-- add prediction-output tests
-- document model limitations
-- add validation strategy and experiment plan
-
-## Project Structure
+Model:
 
 ```text
-industrial-image-defect-detection/
-├── data/
-│   └── README.md
-├── docs/
-│   └── model_card.md
-├── notebooks/
-├── results/
-├── src/
-│   ├── preprocess.py
-│   ├── train.py
-│   ├── evaluate.py
-│   └── predict.py
-├── tests/
-├── requirements.txt
-└── README.md
+RandomForestClassifier
 ```
-
-## Current Status
-
-Project skeleton created. Phase 3 begins with dataset setup, image loading, and sample visualization.
-
-## Planned Results
-
-The final project should include:
-
-- dataset summary
-- sample normal and defective images
-- baseline classification metrics
-- confusion matrix
-- example predictions
-- validation limitations
-- model card
-- reproducible scripts
-- basic tests
 
 ## Baseline Results
 
@@ -132,27 +97,224 @@ results/baseline_classification_report.txt
 results/baseline_evaluation_summary.json
 results/confusion_matrix_baseline.png
 results/feature_importance_baseline.png
+```
+
+## Project Structure
+
+```text
+industrial-image-defect-detection/
+├── data/
+│   └── README.md
+├── docs/
+│   ├── model_card.md
+│   ├── validation_strategy.md
+│   └── experiment_plan.md
+├── notebooks/
+├── results/
+├── src/
+│   ├── data_loader.py
+│   ├── visualize.py
+│   ├── preprocess.py
+│   ├── features.py
+│   ├── train.py
+│   ├── evaluate.py
+│   └── predict.py
+├── tests/
+│   ├── test_data_loader.py
+│   ├── test_preprocess.py
+│   ├── test_features.py
+│   └── test_prediction_output.py
+├── requirements.txt
+└── README.md
+```
+
+## How to Run
+
+### 1. Create and activate a virtual environment
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Load dataset index
+
+```bash
+python src/data_loader.py
+```
+
+This creates:
+
+```text
+results/dataset_index.csv
+results/dataset_summary.csv
+```
+
+### 4. Generate sample image grid
+
+```bash
+python src/visualize.py
+```
+
+This creates:
+
+```text
+results/sample_images.png
+```
+
+### 5. Run preprocessing preview
+
+```bash
+python src/preprocess.py
+```
+
+This creates:
+
+```text
+results/preprocessing_preview.png
+```
+
+### 6. Extract image features
+
+```bash
+python src/features.py
+```
+
+This creates:
+
+```text
+results/image_feature_table.csv
+results/image_feature_preview.csv
+results/image_feature_summary.csv
+```
+
+### 7. Train baseline classifier
+
+```bash
+python src/train.py
+```
+
+This creates:
+
+```text
+models/baseline_random_forest_image_classifier.joblib
+results/baseline_metrics.json
+results/baseline_classification_report.txt
+results/baseline_feature_columns.json
+```
+
+### 8. Evaluate baseline classifier
+
+```bash
+python src/evaluate.py
+```
+
+This creates:
+
+```text
+results/confusion_matrix_baseline.png
+results/feature_importance_baseline.png
+results/baseline_evaluation_summary.json
+```
+
+### 9. Predict one image
+
+```bash
+python src/predict.py --image data/raw/mvtec_ad/bottle/test/good/000.png
+```
+
+Example output:
+
+```text
+Predicted label: normal
+```
+
+### 10. Run tests
+
+```bash
+pytest
+```
+
+## Testing
+
+Tests are included for:
+
+- dataset loading
+- image path discovery
+- label extraction
+- RGB image loading
+- resizing
+- normalization
+- grayscale conversion
+- feature extraction
+- prediction output structure
 
 ## Validation Note
 
-The first version will be a development baseline, not a production-quality inspection system.
+The current baseline is a first development version. It is not yet a full industrial anomaly-detection solution.
 
-Important limitations to document:
+Detailed validation and experiment plans are documented here:
 
-- small initial scope using only one category
-- possible dataset-specific performance
-- limited robustness testing
-- no real industrial deployment data
-- no camera/sensor calibration checks
-- no production monitoring
+```text
+docs/validation_strategy.md
+docs/experiment_plan.md
+```
+
+Main limitations:
+
+- only one MVTec AD category used so far
+- baseline is supervised, not pure anomaly detection
+- model uses manually extracted features
+- no anomaly heatmaps yet
+- no robustness testing under changing camera or lighting conditions
+- no production deployment validation
+
+## Experiment Roadmap
+
+Planned experiment stages:
+
+1. Baseline Random Forest model on manually extracted image features
+2. Feature-group comparison: colour vs grayscale vs edge features
+3. Classical model comparison: Logistic Regression, Random Forest, SVM, and gradient boosting
+4. MVTec-style anomaly detection: train only on normal images
+5. PatchCore or PaDiM anomaly-detection model
+6. Defect-type error analysis
+7. Anomaly heatmap generation and comparison with ground-truth masks
+
+The focus is not only on accuracy, but on making the validation more realistic and industrially meaningful.
+
+## Model Card
+
+A model card is provided in:
+
+```text
+docs/model_card.md
+```
+
+## Limitations
+
+This project is for applied learning and portfolio demonstration. It is not intended for real industrial inspection decisions without:
+
+- more extensive validation
+- testing on unseen production data
+- robustness checks
+- expert review
+- deployment monitoring
 
 ## Future Improvements
 
 Planned extensions:
 
+- add PatchCore or PaDiM using Anomalib
+- train only on normal images
+- generate anomaly localization heatmaps
+- evaluate image-level and pixel-level anomaly detection
 - add more MVTec AD categories
-- compare classical image-feature baselines with anomaly-detection models
-- add PatchCore or PaDiM
-- generate anomaly heatmaps
-- add stronger validation tests
-- build a simple inference demo
+- add a simple inference demo
+- connect validation utilities from the ML testing and validation toolkit
