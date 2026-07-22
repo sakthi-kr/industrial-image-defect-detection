@@ -24,6 +24,12 @@ data/README.md
 
 The first implementation will use only the `bottle` category.
 
+## Sample Images
+
+The first version uses the MVTec AD `bottle` category, including normal images and several defect types.
+
+![Sample Images](results/sample_images.png)
+
 ## Problem Definition
 
 The first baseline will treat the task as binary classification:
