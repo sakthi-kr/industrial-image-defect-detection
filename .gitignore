@@ -16,6 +16,10 @@ data/processed/
 *.ckpt
 *.onnx
 
+# Trained local models
+models/
+*.joblib
+
 # Results that may become large
 results/raw/
 wandb/
