@@ -30,6 +30,12 @@ The first version uses the MVTec AD `bottle` category, including normal images a
 
 ![Sample Images](results/sample_images.png)
 
+## Preprocessing Preview
+
+Images are converted to RGB, resized to `128 × 128`, normalized to `[0, 1]`, and converted to grayscale for simple baseline feature extraction.
+
+![Preprocessing Preview](results/preprocessing_preview.png)
+
 ## Problem Definition
 
 The first baseline will treat the task as binary classification:
