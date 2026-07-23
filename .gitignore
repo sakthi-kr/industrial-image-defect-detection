@@ -46,3 +46,6 @@ Thumbs.db
 # Anomalib generated training outputs
 results/patchcore_anomalib/
 *.ckpt
+
+# Intermediate PatchCore smoke-test output
+results/patchcore_smoke_metrics.json
