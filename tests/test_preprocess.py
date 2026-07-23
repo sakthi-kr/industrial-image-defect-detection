@@ -1,6 +1,8 @@
-import numpy as np
+from pathlib import Path
 
-from src.data_loader import load_image_records
+import numpy as np
+import pytest
+
 from src.preprocess import (
     DEFAULT_IMAGE_SIZE,
     image_to_array,
@@ -11,56 +13,91 @@ from src.preprocess import (
 )
 
 
-def get_first_image_path():
-    records = load_image_records()
-    return records[0].image_path
-
-
-def test_load_rgb_image():
-    image_path = get_first_image_path()
-    image = load_rgb_image(image_path)
+def test_load_rgb_image(
+    synthetic_image_path: Path,
+) -> None:
+    image = load_rgb_image(
+        synthetic_image_path
+    )
 
     assert image.mode == "RGB"
-    assert image.size[0] > 0
-    assert image.size[1] > 0
+    assert image.size == (96, 96)
 
 
-def test_resize_image():
-    image_path = get_first_image_path()
-    image = load_rgb_image(image_path)
-    resized = resize_image(image, image_size=DEFAULT_IMAGE_SIZE)
+def test_resize_image(
+    synthetic_image_path: Path,
+) -> None:
+    image = load_rgb_image(
+        synthetic_image_path
+    )
+
+    resized = resize_image(
+        image,
+        image_size=DEFAULT_IMAGE_SIZE,
+    )
 
     assert resized.size == DEFAULT_IMAGE_SIZE
 
 
-def test_image_to_array_normalized():
-    image_path = get_first_image_path()
-    image = load_rgb_image(image_path)
-    resized = resize_image(image, image_size=DEFAULT_IMAGE_SIZE)
+def test_image_to_array_normalized(
+    synthetic_image_path: Path,
+) -> None:
+    image = load_rgb_image(
+        synthetic_image_path
+    )
 
-    array = image_to_array(resized, normalize=True)
+    resized = resize_image(
+        image,
+        image_size=DEFAULT_IMAGE_SIZE,
+    )
 
-    assert isinstance(array, np.ndarray)
-    assert array.shape == (DEFAULT_IMAGE_SIZE[1], DEFAULT_IMAGE_SIZE[0], 3)
+    array = image_to_array(
+        resized,
+        normalize=True,
+    )
+
+    assert isinstance(
+        array,
+        np.ndarray,
+    )
+
+    assert array.shape == (
+        DEFAULT_IMAGE_SIZE[1],
+        DEFAULT_IMAGE_SIZE[0],
+        3,
+    )
+
+    assert array.dtype == np.float32
     assert array.min() >= 0.0
     assert array.max() <= 1.0
 
 
-def test_rgb_to_grayscale_array():
-    image_path = get_first_image_path()
-    processed = preprocess_image(image_path)
+def test_rgb_to_grayscale_array(
+    synthetic_image_path: Path,
+) -> None:
+    processed = preprocess_image(
+        synthetic_image_path
+    )
 
-    rgb_array = processed["rgb_array"]
-    grayscale_array = rgb_to_grayscale_array(rgb_array)
+    grayscale_array = rgb_to_grayscale_array(
+        processed["rgb_array"]
+    )
 
-    assert grayscale_array.shape == (DEFAULT_IMAGE_SIZE[1], DEFAULT_IMAGE_SIZE[0])
+    assert grayscale_array.shape == (
+        DEFAULT_IMAGE_SIZE[1],
+        DEFAULT_IMAGE_SIZE[0],
+    )
+
     assert grayscale_array.min() >= 0.0
     assert grayscale_array.max() <= 1.0
 
 
-def test_preprocess_image_output_structure():
-    image_path = get_first_image_path()
-    processed = preprocess_image(image_path)
+def test_preprocess_image_output_structure(
+    synthetic_image_path: Path,
+) -> None:
+    processed = preprocess_image(
+        synthetic_image_path
+    )
 
     expected_keys = {
         "image_path",
@@ -70,6 +107,58 @@ def test_preprocess_image_output_structure():
         "grayscale_array",
     }
 
-    assert expected_keys.issubset(processed.keys())
-    assert processed["rgb_array"].shape == (DEFAULT_IMAGE_SIZE[1], DEFAULT_IMAGE_SIZE[0], 3)
-    assert processed["grayscale_array"].shape == (DEFAULT_IMAGE_SIZE[1], DEFAULT_IMAGE_SIZE[0])
+    assert expected_keys.issubset(
+        processed.keys()
+    )
+
+    assert processed["image_path"] == (
+        synthetic_image_path
+    )
+
+    assert processed[
+        "rgb_array"
+    ].shape == (
+        DEFAULT_IMAGE_SIZE[1],
+        DEFAULT_IMAGE_SIZE[0],
+        3,
+    )
+
+    assert processed[
+        "grayscale_array"
+    ].shape == (
+        DEFAULT_IMAGE_SIZE[1],
+        DEFAULT_IMAGE_SIZE[0],
+    )
+
+
+def test_invalid_resize_dimensions_raise_error(
+    synthetic_image_path: Path,
+) -> None:
+    image = load_rgb_image(
+        synthetic_image_path
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="Invalid image size",
+    ):
+        resize_image(
+            image,
+            image_size=(0, 128),
+        )
+
+
+def test_missing_image_raises_error(
+    tmp_path: Path,
+) -> None:
+    missing_image = (
+        tmp_path / "missing.png"
+    )
+
+    with pytest.raises(
+        FileNotFoundError,
+        match="Image file not found",
+    ):
+        load_rgb_image(
+            missing_image
+        )
