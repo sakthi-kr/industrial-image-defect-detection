@@ -93,7 +93,7 @@ PatchCore is closer to an industrial inspection scenario in which representative
 
 The MVTec AD `bottle` category contains normal images and several defect types.
 
-![Sample Images](results/sample_images.png)
+![Sample Images](results/sample_images.jpg)
 
 ## Preprocessing Preview
 
@@ -339,7 +339,7 @@ python src/visualize.py
 Output:
 
 ```text
-results/sample_images.png
+results/sample_images.jpg
 ```
 
 ### 5. Generate the preprocessing preview

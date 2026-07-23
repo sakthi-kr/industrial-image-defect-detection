@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RESULTS_DIR = PROJECT_ROOT / "results"
 
-SAMPLE_OUTPUT_PATH = RESULTS_DIR / "sample_images.png"
+SAMPLE_OUTPUT_PATH = RESULTS_DIR / "sample_images.jpg"
 
 
 def load_dataset_table() -> pd.DataFrame:
