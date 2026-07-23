@@ -1,5 +1,7 @@
 # Industrial Image Defect Detection
 
+[![Image Pipeline Tests](https://github.com/sakthi-kr/industrial-image-defect-detection/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/sakthi-kr/industrial-image-defect-detection/actions/workflows/tests.yml)
+
 ## Summary
 
 This project develops an industrial image defect-detection pipeline using the MVTec AD `bottle` category.
