@@ -581,3 +581,52 @@ Planned extensions:
 - add a simple inference interface
 - integrate the ML testing and validation toolkit
 - add model monitoring and data-drift checks
+
+<!-- PATCHCORE_VALIDATION_SECTION_START -->
+## Reusable PatchCore Output Validation
+
+The saved PatchCore artifacts are checked using the separate `ml-testing-validation-toolkit` package. This validation runs without loading Anomalib or rebuilding the PatchCore memory bank.
+
+Checks cover:
+
+- prediction-table schema and missing values
+- label and anomaly-score ranges
+- duplicate image records
+- label-mapping consistency
+- error-table consistency
+- metric and confusion-matrix consistency
+- project-relative paths in committed outputs
+
+### Current Validation Result
+
+| Item | Result |
+|---|---:|
+| Overall status | PASS |
+| Checks passed | 21 / 21 |
+| Accuracy | 0.9759 |
+| Precision | 0.9841 |
+| Recall | 0.9841 |
+| F1-score | 0.9841 |
+
+Run the validation in the project's normal Python environment:
+
+```bash
+python -m pip install -e ../ml-testing-validation-toolkit
+python src/validate_patchcore_results.py
+```
+
+Generated outputs:
+
+```text
+results/patchcore_validation_report.json
+results/patchcore_validation_checks.csv
+```
+
+Detailed documentation:
+
+```text
+docs/patchcore_validation.md
+```
+
+Passing these checks confirms internal artifact consistency. It does not replace robustness testing, independent threshold validation, evaluation on additional categories, or production deployment validation.
+<!-- PATCHCORE_VALIDATION_SECTION_END -->

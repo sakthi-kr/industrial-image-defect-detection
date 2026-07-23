@@ -80,3 +80,20 @@ Main results:
 | Correct test images | 81 / 83 |
 
 The main remaining weaknesses are exact pixel-level localization, threshold validation, and robustness beyond the controlled MVTec benchmark.
+
+<!-- PATCHCORE_VALIDATION_DOC_START -->
+### PatchCore Output Validation
+
+```text
+patchcore_validation.md
+```
+
+Documents:
+
+- reusable validation-toolkit integration
+- saved prediction-table checks
+- source-report and confusion-matrix consistency
+- recalculated image-level metrics
+- portable-path validation
+- interpretation and remaining limitations
+<!-- PATCHCORE_VALIDATION_DOC_END -->

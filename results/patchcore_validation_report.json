@@ -1,0 +1,549 @@
+{
+    "schema_version": "1.0",
+    "report_name": "PatchCore Output Validation Report",
+    "generated_at_utc": "2026-07-23T09:56:39.836644Z",
+    "summary": {
+        "overall_passed": true,
+        "status": "PASS",
+        "total_checks": 21,
+        "passed_checks": 21,
+        "failed_checks": 0,
+        "passed_check_names": [
+            "required_columns",
+            "missing_values",
+            "infinite_values",
+            "duplicate_rows",
+            "allowed_values:defect_type",
+            "allowed_values:true_label",
+            "allowed_values:predicted_label",
+            "allowed_values:true_numeric",
+            "allowed_values:predicted_numeric",
+            "numeric_ranges",
+            "class_balance:true_label",
+            "prediction_lengths",
+            "prediction_labels",
+            "score_range",
+            "metric_thresholds",
+            "confusion_matrix_consistency",
+            "label_mapping_consistency",
+            "error_table_consistency",
+            "source_report_consistency",
+            "confusion_matrix_schema",
+            "portable_output_paths"
+        ],
+        "failed_check_names": []
+    },
+    "metadata": {
+        "project": "industrial-image-defect-detection",
+        "model": "PatchCore",
+        "dataset": "MVTec AD bottle",
+        "prediction_rows": 83,
+        "error_rows": 2,
+        "calculated_metrics": {
+            "accuracy": 0.9759036144578314,
+            "precision": 0.9841269841269841,
+            "recall": 0.9841269841269841,
+            "f1_score": 0.9841269841269841
+        },
+        "expected_confusion_matrix": [
+            [
+                19,
+                1
+            ],
+            [
+                1,
+                62
+            ]
+        ],
+        "source_files": [
+            "results\\patchcore_predictions.csv",
+            "results\\patchcore_error_analysis.csv",
+            "results\\patchcore_report.json",
+            "results\\patchcore_confusion_matrix.csv"
+        ],
+        "threshold_interpretation": "Metric thresholds are development regression checks, not production acceptance criteria."
+    },
+    "checks": [
+        {
+            "check_index": 0,
+            "name": "required_columns",
+            "passed": true,
+            "status": "PASS",
+            "message": "All 10 required columns are present.",
+            "details": {
+                "required_columns": [
+                    "image_path",
+                    "file_name",
+                    "defect_type",
+                    "true_label",
+                    "true_numeric",
+                    "predicted_label",
+                    "predicted_numeric",
+                    "pred_score",
+                    "correct",
+                    "has_anomaly_map"
+                ],
+                "missing_columns": []
+            }
+        },
+        {
+            "check_index": 1,
+            "name": "missing_values",
+            "passed": true,
+            "status": "PASS",
+            "message": "Missing-value fractions are within the allowed limit of 0.000.",
+            "details": {
+                "row_count": 83,
+                "inspected_columns": [
+                    "image_path",
+                    "file_name",
+                    "defect_type",
+                    "true_label",
+                    "true_numeric",
+                    "predicted_label",
+                    "predicted_numeric",
+                    "pred_score",
+                    "correct",
+                    "has_anomaly_map"
+                ],
+                "missing_counts": {
+                    "image_path": 0,
+                    "file_name": 0,
+                    "defect_type": 0,
+                    "true_label": 0,
+                    "true_numeric": 0,
+                    "predicted_label": 0,
+                    "predicted_numeric": 0,
+                    "pred_score": 0,
+                    "correct": 0,
+                    "has_anomaly_map": 0
+                },
+                "missing_fractions": {
+                    "image_path": 0.0,
+                    "file_name": 0.0,
+                    "defect_type": 0.0,
+                    "true_label": 0.0,
+                    "true_numeric": 0.0,
+                    "predicted_label": 0.0,
+                    "predicted_numeric": 0.0,
+                    "pred_score": 0.0,
+                    "correct": 0.0,
+                    "has_anomaly_map": 0.0
+                },
+                "violating_columns": {},
+                "max_missing_fraction": 0.0
+            }
+        },
+        {
+            "check_index": 2,
+            "name": "infinite_values",
+            "passed": true,
+            "status": "PASS",
+            "message": "No infinite values were found.",
+            "details": {
+                "inspected_columns": [
+                    "true_numeric",
+                    "predicted_numeric",
+                    "pred_score"
+                ],
+                "infinite_counts": {
+                    "true_numeric": 0,
+                    "predicted_numeric": 0,
+                    "pred_score": 0
+                },
+                "violating_columns": {}
+            }
+        },
+        {
+            "check_index": 3,
+            "name": "duplicate_rows",
+            "passed": true,
+            "status": "PASS",
+            "message": "Duplicate count 0 is within the allowed limit of 0.",
+            "details": {
+                "subset": [
+                    "image_path"
+                ],
+                "duplicate_count": 0,
+                "duplicate_indices": [],
+                "max_duplicates": 0
+            }
+        },
+        {
+            "check_index": 4,
+            "name": "allowed_values:defect_type",
+            "passed": true,
+            "status": "PASS",
+            "message": "Column 'defect_type' contains only allowed values.",
+            "details": {
+                "column": "defect_type",
+                "allowed_values": [
+                    "good",
+                    "broken_large",
+                    "broken_small",
+                    "contamination"
+                ],
+                "observed_values": [
+                    "good",
+                    "broken_large",
+                    "broken_small",
+                    "contamination"
+                ],
+                "unexpected_values": [],
+                "missing_count": 0,
+                "allow_missing": false
+            }
+        },
+        {
+            "check_index": 5,
+            "name": "allowed_values:true_label",
+            "passed": true,
+            "status": "PASS",
+            "message": "Column 'true_label' contains only allowed values.",
+            "details": {
+                "column": "true_label",
+                "allowed_values": [
+                    "normal",
+                    "defective"
+                ],
+                "observed_values": [
+                    "normal",
+                    "defective"
+                ],
+                "unexpected_values": [],
+                "missing_count": 0,
+                "allow_missing": false
+            }
+        },
+        {
+            "check_index": 6,
+            "name": "allowed_values:predicted_label",
+            "passed": true,
+            "status": "PASS",
+            "message": "Column 'predicted_label' contains only allowed values.",
+            "details": {
+                "column": "predicted_label",
+                "allowed_values": [
+                    "normal",
+                    "defective"
+                ],
+                "observed_values": [
+                    "normal",
+                    "defective"
+                ],
+                "unexpected_values": [],
+                "missing_count": 0,
+                "allow_missing": false
+            }
+        },
+        {
+            "check_index": 7,
+            "name": "allowed_values:true_numeric",
+            "passed": true,
+            "status": "PASS",
+            "message": "Column 'true_numeric' contains only allowed values.",
+            "details": {
+                "column": "true_numeric",
+                "allowed_values": [
+                    0,
+                    1
+                ],
+                "observed_values": [
+                    0,
+                    1
+                ],
+                "unexpected_values": [],
+                "missing_count": 0,
+                "allow_missing": false
+            }
+        },
+        {
+            "check_index": 8,
+            "name": "allowed_values:predicted_numeric",
+            "passed": true,
+            "status": "PASS",
+            "message": "Column 'predicted_numeric' contains only allowed values.",
+            "details": {
+                "column": "predicted_numeric",
+                "allowed_values": [
+                    0,
+                    1
+                ],
+                "observed_values": [
+                    0,
+                    1
+                ],
+                "unexpected_values": [],
+                "missing_count": 0,
+                "allow_missing": false
+            }
+        },
+        {
+            "check_index": 9,
+            "name": "numeric_ranges",
+            "passed": true,
+            "status": "PASS",
+            "message": "All 3 configured numeric range checks passed.",
+            "details": {
+                "configured_ranges": {
+                    "true_numeric": [
+                        0.0,
+                        1.0
+                    ],
+                    "predicted_numeric": [
+                        0.0,
+                        1.0
+                    ],
+                    "pred_score": [
+                        0.0,
+                        1.0
+                    ]
+                },
+                "inclusive": true,
+                "violations": {}
+            }
+        },
+        {
+            "check_index": 10,
+            "name": "class_balance:true_label",
+            "passed": true,
+            "status": "PASS",
+            "message": "Target 'true_label' satisfies the configured class-balance requirements.",
+            "details": {
+                "target_column": "true_label",
+                "class_counts": {
+                    "defective": 63,
+                    "normal": 20
+                },
+                "class_fractions": {
+                    "defective": 0.7590361445783133,
+                    "normal": 0.24096385542168675
+                },
+                "class_count": 2,
+                "missing_count": 0,
+                "min_classes": 2,
+                "min_samples_per_class": 1,
+                "min_fraction_per_class": 0.0,
+                "low_count_classes": {},
+                "low_fraction_classes": {}
+            }
+        },
+        {
+            "check_index": 11,
+            "name": "prediction_lengths",
+            "passed": true,
+            "status": "PASS",
+            "message": "All model outputs contain 83 sample(s).",
+            "details": {
+                "expected_length": 83,
+                "output_lengths": {
+                    "y_true": 83,
+                    "y_pred": 83,
+                    "scores": 83
+                },
+                "mismatched_outputs": {}
+            }
+        },
+        {
+            "check_index": 12,
+            "name": "prediction_labels",
+            "passed": true,
+            "status": "PASS",
+            "message": "All labels are within the configured allowed set.",
+            "details": {
+                "allowed_labels": [
+                    0,
+                    1
+                ],
+                "observed_values": {
+                    "y_pred": [
+                        0,
+                        1
+                    ],
+                    "y_true": [
+                        0,
+                        1
+                    ]
+                },
+                "unexpected_values": {},
+                "missing_counts": {
+                    "y_pred": 0,
+                    "y_true": 0
+                },
+                "allow_missing": false
+            }
+        },
+        {
+            "check_index": 13,
+            "name": "score_range",
+            "passed": true,
+            "status": "PASS",
+            "message": "All scores are within the configured range.",
+            "details": {
+                "minimum": 0.0,
+                "maximum": 1.0,
+                "inclusive": true,
+                "allow_missing": false,
+                "missing_count": 0,
+                "infinite_count": 0,
+                "below_minimum_count": 0,
+                "above_maximum_count": 0,
+                "observed_minimum": 0.362182468175888,
+                "observed_maximum": 1.0
+            }
+        },
+        {
+            "check_index": 14,
+            "name": "metric_thresholds",
+            "passed": true,
+            "status": "PASS",
+            "message": "All 4 configured metric threshold checks passed.",
+            "details": {
+                "metrics": {
+                    "accuracy": 0.9759036144578314,
+                    "precision": 0.9841269841269841,
+                    "recall": 0.9841269841269841,
+                    "f1_score": 0.9841269841269841
+                },
+                "minimums": {
+                    "accuracy": 0.9,
+                    "precision": 0.9,
+                    "recall": 0.9,
+                    "f1_score": 0.9
+                },
+                "maximums": {},
+                "missing_metrics": [],
+                "non_numeric_metrics": {},
+                "non_finite_metrics": {},
+                "violations": {}
+            }
+        },
+        {
+            "check_index": 15,
+            "name": "confusion_matrix_consistency",
+            "passed": true,
+            "status": "PASS",
+            "message": "The supplied confusion matrix matches the predictions.",
+            "details": {
+                "labels": [
+                    0,
+                    1
+                ],
+                "expected_matrix": [
+                    [
+                        19,
+                        1
+                    ],
+                    [
+                        1,
+                        62
+                    ]
+                ],
+                "observed_matrix": [
+                    [
+                        19.0,
+                        1.0
+                    ],
+                    [
+                        1.0,
+                        62.0
+                    ]
+                ],
+                "expected_total": 83,
+                "observed_total": 83.0,
+                "finite": true,
+                "non_negative": true,
+                "integer_valued": true,
+                "matrices_equal": true,
+                "total_matches": true
+            }
+        },
+        {
+            "check_index": 16,
+            "name": "label_mapping_consistency",
+            "passed": true,
+            "status": "PASS",
+            "message": "Text labels, numeric labels, and correctness flags are internally consistent.",
+            "details": {
+                "true_label_mismatch_rows": [],
+                "predicted_label_mismatch_rows": [],
+                "invalid_correct_value_rows": [],
+                "correct_flag_mismatch_rows": []
+            }
+        },
+        {
+            "check_index": 17,
+            "name": "error_table_consistency",
+            "passed": true,
+            "status": "PASS",
+            "message": "The error table contains exactly the incorrect predictions.",
+            "details": {
+                "expected_error_count": 2,
+                "observed_error_count": 2,
+                "missing_image_paths": [],
+                "unexpected_image_paths": []
+            }
+        },
+        {
+            "check_index": 18,
+            "name": "source_report_consistency",
+            "passed": true,
+            "status": "PASS",
+            "message": "The PatchCore JSON report matches the prediction table.",
+            "details": {
+                "missing_fields": [],
+                "mismatches": {},
+                "expected_values": {
+                    "n_test_images": 83,
+                    "n_normal_images": 20,
+                    "n_defective_images": 63,
+                    "false_positives": 1,
+                    "false_negatives": 1,
+                    "n_errors": 2,
+                    "accuracy": 0.9759036144578314,
+                    "precision": 0.9841269841269841,
+                    "recall": 0.9841269841269841,
+                    "f1_score": 0.9841269841269841
+                }
+            }
+        },
+        {
+            "check_index": 19,
+            "name": "confusion_matrix_schema",
+            "passed": true,
+            "status": "PASS",
+            "message": "The confusion-matrix row and column labels are correct.",
+            "details": {
+                "expected_rows": [
+                    "true_normal",
+                    "true_defective"
+                ],
+                "observed_rows": [
+                    "true_normal",
+                    "true_defective"
+                ],
+                "expected_columns": [
+                    "pred_normal",
+                    "pred_defective"
+                ],
+                "observed_columns": [
+                    "pred_normal",
+                    "pred_defective"
+                ]
+            }
+        },
+        {
+            "check_index": 20,
+            "name": "portable_output_paths",
+            "passed": true,
+            "status": "PASS",
+            "message": "Committed PatchCore output paths are project-relative.",
+            "details": {
+                "absolute_image_path_count": 0,
+                "absolute_image_paths": [],
+                "checkpoint_path": "results\\patchcore_anomalib\\Patchcore\\MVTecAD\\bottle\\v6\\weights\\lightning\\model.ckpt",
+                "checkpoint_path_is_absolute": false
+            }
+        }
+    ]
+}
