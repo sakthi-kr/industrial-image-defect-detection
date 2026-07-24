@@ -716,3 +716,13 @@ docs/patchcore_validation.md
 
 Passing these checks confirms internal artifact consistency. It does not replace robustness testing, independent threshold validation, evaluation on additional categories, or production deployment validation.
 <!-- PATCHCORE_VALIDATION_SECTION_END -->
+
+<!-- PATCHCORE_FAILURE_ANALYSIS_START -->
+## Focused failure analysis
+
+The saved `bottle` predictions contain **1 false positive** and **1 false negative**. The missed case is a contamination image at the classification threshold. Across the five-category benchmark, **leather** has the lowest pixel F1 (0.343), despite strong image-level detection.
+
+The analysis includes score-margin diagnostics, defect-type performance, representative failure images, and the image-detection versus pixel-localization gap. The ±0.05 review band is illustrative and was not tuned on the test set.
+
+Detailed report: [`docs/patchcore_failure_analysis.md`](docs/patchcore_failure_analysis.md)
+<!-- PATCHCORE_FAILURE_ANALYSIS_END -->

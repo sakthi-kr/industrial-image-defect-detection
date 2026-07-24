@@ -1,0 +1,42 @@
+{
+  "analysis": "PatchCore failure and localization analysis",
+  "category": "bottle",
+  "decision_threshold": 0.5,
+  "illustrative_review_margin": 0.05,
+  "n_test_images": 83,
+  "n_correct": 81,
+  "n_errors": 2,
+  "false_positives": 1,
+  "false_negatives": 1,
+  "false_positive_cases": [
+    {
+      "image_path": "data/raw/mvtec_ad/bottle/test/good/006.png",
+      "defect_type": "good",
+      "pred_score": 0.5243843793869019,
+      "score_margin": 0.024384379386901855
+    }
+  ],
+  "false_negative_cases": [
+    {
+      "image_path": "data/raw/mvtec_ad/bottle/test/contamination/003.png",
+      "defect_type": "contamination",
+      "pred_score": 0.5,
+      "score_margin": 0.0
+    }
+  ],
+  "n_inside_illustrative_review_band": 5,
+  "hardest_bottle_defect_types_by_correct_rate": [
+    "contamination"
+  ],
+  "localization": {
+    "largest_image_pixel_f1_gap_category": "leather",
+    "largest_image_pixel_f1_gap": 0.651155024766922,
+    "lowest_pixel_f1_category": "leather",
+    "lowest_pixel_f1": 0.3433804810047149
+  },
+  "interpretation_limits": [
+    "The review band is descriptive and has not been tuned on an independent validation set.",
+    "The bottle error analysis uses one benchmark test set and should not be treated as a production error rate.",
+    "Image-level detection and pixel-level localization measure different capabilities."
+  ]
+}
