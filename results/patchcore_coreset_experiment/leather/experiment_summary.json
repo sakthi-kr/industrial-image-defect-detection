@@ -1,0 +1,103 @@
+{
+  "experiment": "PatchCore coreset-ratio sensitivity",
+  "category": "leather",
+  "controlled_variable": "coreset_sampling_ratio",
+  "primary_metric": "pixel_f1",
+  "selection_rule": "Choose the smallest coreset ratio whose pixel F1 is within 0.005 absolute of the best observed pixel F1.",
+  "efficiency_tolerance": 0.005,
+  "efficiency_oriented_ratio": 0.005,
+  "reference_ratio": 0.01,
+  "best_by_metric": {
+    "image_auroc": {
+      "score": 1.0,
+      "ratios": [
+        0.005,
+        0.01,
+        0.05
+      ]
+    },
+    "image_f1": {
+      "score": 0.994535505771637,
+      "ratios": [
+        0.005,
+        0.01,
+        0.05
+      ]
+    },
+    "pixel_auroc": {
+      "score": 0.9878310561180116,
+      "ratios": [
+        0.01
+      ]
+    },
+    "pixel_f1": {
+      "score": 0.3455142080783844,
+      "ratios": [
+        0.05
+      ]
+    }
+  },
+  "fastest_ratios": [
+    0.005
+  ],
+  "slowest_ratios": [
+    0.05
+  ],
+  "memory_bank": {
+    "available": true,
+    "smallest_ratios": [
+      0.005
+    ],
+    "largest_ratios": [
+      0.05
+    ],
+    "reference_embeddings": 1920,
+    "efficiency_embeddings": 960,
+    "efficiency_vs_reference_percent": -50.0
+  },
+  "results": [
+    {
+      "category": "leather",
+      "coreset_sampling_ratio": 0.005,
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9872922897338868,
+      "pixel_f1": 0.3438301682472229,
+      "elapsed_seconds": 72.99046909995377,
+      "memory_bank_embeddings": 960,
+      "embedding_dimension": 384,
+      "summary_path": "results/patchcore_coreset_experiment/leather/ratio_0p005/run_summary.json",
+      "pixel_f1_delta_vs_reference": -0.00021252036094659976,
+      "runtime_change_vs_reference_percent": -25.034961455372976
+    },
+    {
+      "category": "leather",
+      "coreset_sampling_ratio": 0.01,
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9878310561180116,
+      "pixel_f1": 0.3440426886081695,
+      "elapsed_seconds": 97.3660129001364,
+      "memory_bank_embeddings": 1920,
+      "embedding_dimension": 384,
+      "summary_path": "results/patchcore_coreset_experiment/leather/ratio_0p01/run_summary.json",
+      "pixel_f1_delta_vs_reference": 0.0,
+      "runtime_change_vs_reference_percent": 0.0
+    },
+    {
+      "category": "leather",
+      "coreset_sampling_ratio": 0.05,
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9876659512519836,
+      "pixel_f1": 0.3455142080783844,
+      "elapsed_seconds": 369.4421095999424,
+      "memory_bank_embeddings": 9604,
+      "embedding_dimension": 384,
+      "summary_path": "results/patchcore_coreset_experiment/leather/ratio_0p05/run_summary.json",
+      "pixel_f1_delta_vs_reference": 0.0014715194702148993,
+      "runtime_change_vs_reference_percent": 279.4364158454976
+    }
+  ],
+  "scope_limit": "This conclusion applies to the leather category and the tested configuration only; it is not a universal PatchCore optimum."
+}
