@@ -1,0 +1,21 @@
+metric,metric_name,rank,category,score
+image_auroc,Image AUROC,1,bottle,1.0
+image_auroc,Image AUROC,2,leather,1.0
+image_auroc,Image AUROC,3,tile,0.9956709742546082
+image_auroc,Image AUROC,4,cable,0.9921289682388306
+image_auroc,Image AUROC,5,metal_nut,0.990713596343994
+image_f1,Image F1,1,leather,0.994535505771637
+image_f1,Image F1,2,bottle,0.9919999837875366
+image_f1,Image F1,3,tile,0.976190447807312
+image_f1,Image F1,4,metal_nut,0.9732620120048524
+image_f1,Image F1,5,cable,0.96256685256958
+pixel_auroc,Pixel AUROC,1,leather,0.987607717514038
+pixel_auroc,Pixel AUROC,2,metal_nut,0.9828281998634338
+pixel_auroc,Pixel AUROC,3,cable,0.9807322025299072
+pixel_auroc,Pixel AUROC,4,bottle,0.9766333103179932
+pixel_auroc,Pixel AUROC,5,tile,0.9310380816459656
+pixel_f1,Pixel F1,1,metal_nut,0.8175395727157593
+pixel_f1,Pixel F1,2,bottle,0.6560171246528625
+pixel_f1,Pixel F1,3,cable,0.6171160340309143
+pixel_f1,Pixel F1,4,tile,0.5462066531181335
+pixel_f1,Pixel F1,5,leather,0.3433804810047149

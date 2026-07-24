@@ -1,0 +1,93 @@
+{
+  "benchmark": "Fixed-configuration five-category PatchCore benchmark",
+  "categories": [
+    "bottle",
+    "cable",
+    "leather",
+    "metal_nut",
+    "tile"
+  ],
+  "n_categories": 5,
+  "fixed_configuration": {
+    "model": "Patchcore",
+    "backbone": "resnet18",
+    "layers": [
+      "layer2",
+      "layer3"
+    ],
+    "image_size": [
+      224,
+      224
+    ],
+    "coreset_sampling_ratio": 0.01,
+    "num_neighbors": 5,
+    "accelerator": "cpu"
+  },
+  "macro_average": {
+    "image_auroc": 0.9957027077674866,
+    "image_f1": 0.9797109603881836,
+    "pixel_auroc": 0.9717679023742676,
+    "pixel_f1": 0.5960519731044769
+  },
+  "metric_extremes": {
+    "image_auroc": {
+      "best_categories": [
+        "bottle",
+        "leather"
+      ],
+      "best_score": 1.0,
+      "weakest_categories": [
+        "metal_nut"
+      ],
+      "weakest_score": 0.990713596343994
+    },
+    "image_f1": {
+      "best_categories": [
+        "leather"
+      ],
+      "best_score": 0.994535505771637,
+      "weakest_categories": [
+        "cable"
+      ],
+      "weakest_score": 0.96256685256958
+    },
+    "pixel_auroc": {
+      "best_categories": [
+        "leather"
+      ],
+      "best_score": 0.987607717514038,
+      "weakest_categories": [
+        "tile"
+      ],
+      "weakest_score": 0.9310380816459656
+    },
+    "pixel_f1": {
+      "best_categories": [
+        "metal_nut"
+      ],
+      "best_score": 0.8175395727157593,
+      "weakest_categories": [
+        "leather"
+      ],
+      "weakest_score": 0.3433804810047149
+    }
+  },
+  "runtime": {
+    "total_seconds": 430.2864272999577,
+    "mean_seconds_per_category": 86.05728545999155,
+    "fastest_categories": [
+      "bottle"
+    ],
+    "fastest_seconds": 67.56135919992812,
+    "slowest_categories": [
+      "leather"
+    ],
+    "slowest_seconds": 100.72727150004356
+  },
+  "limitations": [
+    "Only five of the fifteen MVTec AD categories are evaluated.",
+    "One fixed lightweight configuration is used without category-specific tuning.",
+    "The benchmark uses controlled laboratory images rather than production camera data.",
+    "AUROC and F1 do not by themselves establish deployment readiness."
+  ]
+}

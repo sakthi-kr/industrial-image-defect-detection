@@ -1,0 +1,29 @@
+{
+  "model": "Patchcore",
+  "category": "tile",
+  "backbone": "resnet18",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "image_size": [
+    224,
+    224
+  ],
+  "coreset_sampling_ratio": 0.01,
+  "num_neighbors": 5,
+  "accelerator": "cpu",
+  "pytorch_version": "2.13.0+cpu",
+  "cuda_available": false,
+  "elapsed_seconds": 87.33638980006799,
+  "best_model_path": "results/patchcore_anomalib/tile/Patchcore/MVTecAD/tile/v0/weights/lightning/model.ckpt",
+  "test_results": [
+    {
+      "image_AUROC": 0.9956709742546082,
+      "image_F1Score": 0.976190447807312,
+      "pixel_AUROC": 0.9310380816459656,
+      "pixel_F1Score": 0.5462066531181335
+    }
+  ],
+  "run_type": "Fixed-configuration multi-category PatchCore benchmark. The same model settings are used for every category."
+}
