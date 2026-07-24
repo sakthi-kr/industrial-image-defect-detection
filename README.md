@@ -301,6 +301,19 @@ Macro averages:
 The same ResNet-18 PatchCore settings were used for all five categories without category-specific tuning. Detailed rankings, runtime measurements, interpretation, and limitations are available in [`docs/patchcore_multicategory_benchmark.md`](docs/patchcore_multicategory_benchmark.md).
 <!-- MULTICATEGORY_PATCHCORE_END -->
 
+<!-- PATCHCORE_CORESET_EXPERIMENT_START -->
+## Controlled PatchCore experiment
+
+A controlled sensitivity experiment on `leather` varied only the PatchCore coreset sampling ratio (`0.005, 0.01, 0.05`) while keeping the backbone, feature layers, image size, neighbour count, and CPU execution fixed.
+
+- Highest observed pixel F1: **0.3455** at ratio(s) `0.05`
+- Efficiency-oriented ratio under the documented 0.005 pixel-F1 tolerance: **`0.005`**
+- Detailed report: [`docs/patchcore_coreset_sensitivity.md`](docs/patchcore_coreset_sensitivity.md)
+- Comparison data: [`results/patchcore_coreset_experiment/leather/coreset_comparison.csv`](results/patchcore_coreset_experiment/leather/coreset_comparison.csv)
+
+The result is interpreted as a category-specific performance–efficiency trade-off, not a universal PatchCore optimum.
+<!-- PATCHCORE_CORESET_EXPERIMENT_END -->
+
 # Repository Structure
 
 ```text

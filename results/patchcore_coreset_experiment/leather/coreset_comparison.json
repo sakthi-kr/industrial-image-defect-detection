@@ -1,0 +1,81 @@
+{
+  "experiment": "PatchCore coreset-ratio sensitivity",
+  "category": "leather",
+  "controlled_variable": "coreset_sampling_ratio",
+  "fixed_configuration": {
+    "backbone": "resnet18",
+    "layers": [
+      "layer2",
+      "layer3"
+    ],
+    "image_size": [
+      224,
+      224
+    ],
+    "num_neighbors": 5,
+    "accelerator": "cpu",
+    "random_seed": 42
+  },
+  "ratios": [
+    0.005,
+    0.01,
+    0.05
+  ],
+  "best_ratio_by_metric": {
+    "image_auroc": [
+      0.005,
+      0.01,
+      0.05
+    ],
+    "image_f1": [
+      0.005,
+      0.01,
+      0.05
+    ],
+    "pixel_auroc": [
+      0.01
+    ],
+    "pixel_f1": [
+      0.05
+    ]
+  },
+  "results": [
+    {
+      "category": "leather",
+      "coreset_sampling_ratio": 0.005,
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9872922897338867,
+      "pixel_f1": 0.3438301682472229,
+      "elapsed_seconds": 72.99046909995377,
+      "memory_bank_embeddings": 960,
+      "embedding_dimension": 384,
+      "summary_path": "results/patchcore_coreset_experiment/leather/ratio_0p005/run_summary.json"
+    },
+    {
+      "category": "leather",
+      "coreset_sampling_ratio": 0.01,
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9878310561180115,
+      "pixel_f1": 0.34404268860816956,
+      "elapsed_seconds": 97.36601290013641,
+      "memory_bank_embeddings": 1920,
+      "embedding_dimension": 384,
+      "summary_path": "results/patchcore_coreset_experiment/leather/ratio_0p01/run_summary.json"
+    },
+    {
+      "category": "leather",
+      "coreset_sampling_ratio": 0.05,
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9876659512519836,
+      "pixel_f1": 0.3455142080783844,
+      "elapsed_seconds": 369.44210959994234,
+      "memory_bank_embeddings": 9604,
+      "embedding_dimension": 384,
+      "summary_path": "results/patchcore_coreset_experiment/leather/ratio_0p05/run_summary.json"
+    }
+  ],
+  "important_note": "This is a sensitivity experiment on one MVTec AD category, not a universal hyperparameter optimum."
+}

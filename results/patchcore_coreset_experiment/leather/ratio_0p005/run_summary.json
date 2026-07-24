@@ -1,0 +1,40 @@
+{
+  "experiment": "PatchCore coreset-ratio sensitivity",
+  "controlled_variable": "coreset_sampling_ratio",
+  "category": "leather",
+  "model": "Patchcore",
+  "backbone": "resnet18",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "image_size": [
+    224,
+    224
+  ],
+  "coreset_sampling_ratio": 0.005,
+  "num_neighbors": 5,
+  "accelerator": "cpu",
+  "random_seed": 42,
+  "pytorch_version": "2.13.0+cpu",
+  "cuda_available": false,
+  "elapsed_seconds": 72.99046909995377,
+  "memory_bank_embeddings": 960,
+  "embedding_dimension": 384,
+  "best_model_path": "results/patchcore_anomalib_experiments/coreset_ratio/leather/ratio_0p005/Patchcore/MVTecAD/leather/v0/weights/lightning/model.ckpt",
+  "metrics": {
+    "image_auroc": 1.0,
+    "image_f1": 0.994535505771637,
+    "pixel_auroc": 0.9872922897338867,
+    "pixel_f1": 0.3438301682472229
+  },
+  "test_results": [
+    {
+      "image_AUROC": 1.0,
+      "image_F1Score": 0.994535505771637,
+      "pixel_AUROC": 0.9872922897338867,
+      "pixel_F1Score": 0.3438301682472229
+    }
+  ],
+  "interpretation_scope": "Single-category controlled experiment. All settings except the coreset sampling ratio are fixed."
+}
