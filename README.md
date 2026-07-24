@@ -4,7 +4,7 @@
 
 ## Summary
 
-This project develops an industrial image defect-detection pipeline using the MVTec AD `bottle` category.
+This project develops an industrial image defect-detection pipeline using five selected MVTec AD categories, with `bottle` retained for the supervised development baseline.
 
 It includes two approaches:
 
@@ -161,7 +161,7 @@ results/feature_importance_baseline.csv
 
 ## Method
 
-The second version uses PatchCore, an industrial anomaly-detection method trained only on normal bottle images.
+The second version uses PatchCore, an industrial anomaly-detection method trained only on normal images.
 
 PatchCore extracts patch-level features using a pretrained CNN backbone, constructs a representative memory bank from normal images, and scores test-image patches according to their distance from the normal-feature memory.
 
@@ -263,6 +263,31 @@ The two approaches are not directly equivalent.
 | Development benchmark | Primary industrial anomaly-detection workflow |
 
 The Random Forest is retained as a simple, interpretable benchmark. PatchCore is the more realistic industrial anomaly-detection model.
+
+<!-- MULTICATEGORY_PATCHCORE_START -->
+# Multi-Category PatchCore Benchmark
+
+The fixed PatchCore configuration was evaluated on five selected MVTec AD categories spanning rigid objects, complex assemblies, small mechanical parts, and textures.
+
+| Category | Image AUROC | Image F1 | Pixel AUROC | Pixel F1 | Runtime (s) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| bottle | 1.000 | 0.992 | 0.977 | 0.656 | 67.6 |
+| cable | 0.992 | 0.963 | 0.981 | 0.617 | 97.0 |
+| leather | 1.000 | 0.995 | 0.988 | 0.343 | 100.7 |
+| metal_nut | 0.991 | 0.973 | 0.983 | 0.818 | 77.7 |
+| tile | 0.996 | 0.976 | 0.931 | 0.546 | 87.3 |
+
+Macro averages:
+
+- Image AUROC: **0.996**
+- Image F1: **0.980**
+- Pixel AUROC: **0.972**
+- Pixel F1: **0.596**
+
+![Five-category PatchCore comparison](results/patchcore_multicategory/category_comparison.png)
+
+The same ResNet-18 PatchCore settings were used for all five categories without category-specific tuning. Detailed rankings, runtime measurements, interpretation, and limitations are available in [`docs/patchcore_multicategory_benchmark.md`](docs/patchcore_multicategory_benchmark.md).
+<!-- MULTICATEGORY_PATCHCORE_END -->
 
 # Repository Structure
 
@@ -540,7 +565,7 @@ Current limitations:
 
 1. Compare baseline feature groups
 2. Compare additional classical models
-3. Evaluate PatchCore on additional MVTec categories
+3. Evaluate PatchCore on additional MVTec categories — completed for five selected categories
 4. Tune the decision threshold using a separate validation strategy
 5. Compare PatchCore with PaDiM or another anomaly detector
 6. Test robustness to lighting, blur, noise, and image transformations

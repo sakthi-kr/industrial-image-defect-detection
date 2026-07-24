@@ -1,0 +1,143 @@
+{
+  "completed_categories": [
+    "bottle",
+    "cable",
+    "leather",
+    "metal_nut",
+    "tile"
+  ],
+  "n_completed_categories": 5,
+  "fixed_configuration": {
+    "model": "Patchcore",
+    "backbone": "resnet18",
+    "layers": [
+      "layer2",
+      "layer3"
+    ],
+    "image_size": [
+      224,
+      224
+    ],
+    "coreset_sampling_ratio": 0.01,
+    "num_neighbors": 5,
+    "accelerator": "cpu"
+  },
+  "category_results": [
+    {
+      "category": "bottle",
+      "image_auroc": 1.0,
+      "image_f1": 0.9919999837875366,
+      "pixel_auroc": 0.9766333103179932,
+      "pixel_f1": 0.6560171246528625,
+      "elapsed_seconds": 67.56135919992812,
+      "model": "Patchcore",
+      "backbone": "resnet18",
+      "layers": [
+        "layer2",
+        "layer3"
+      ],
+      "image_size": [
+        224,
+        224
+      ],
+      "coreset_sampling_ratio": 0.01,
+      "num_neighbors": 5,
+      "accelerator": "cpu",
+      "summary_path": "results/patchcore_multicategory/bottle/run_summary.json"
+    },
+    {
+      "category": "cable",
+      "image_auroc": 0.9921289682388306,
+      "image_f1": 0.9625668525695801,
+      "pixel_auroc": 0.9807322025299072,
+      "pixel_f1": 0.6171160340309143,
+      "elapsed_seconds": 97.00600850000046,
+      "model": "Patchcore",
+      "backbone": "resnet18",
+      "layers": [
+        "layer2",
+        "layer3"
+      ],
+      "image_size": [
+        224,
+        224
+      ],
+      "coreset_sampling_ratio": 0.01,
+      "num_neighbors": 5,
+      "accelerator": "cpu",
+      "summary_path": "results/patchcore_multicategory/cable/run_summary.json"
+    },
+    {
+      "category": "leather",
+      "image_auroc": 1.0,
+      "image_f1": 0.994535505771637,
+      "pixel_auroc": 0.9876077175140381,
+      "pixel_f1": 0.34338048100471497,
+      "elapsed_seconds": 100.72727150004357,
+      "model": "Patchcore",
+      "backbone": "resnet18",
+      "layers": [
+        "layer2",
+        "layer3"
+      ],
+      "image_size": [
+        224,
+        224
+      ],
+      "coreset_sampling_ratio": 0.01,
+      "num_neighbors": 5,
+      "accelerator": "cpu",
+      "summary_path": "results/patchcore_multicategory/leather/run_summary.json"
+    },
+    {
+      "category": "metal_nut",
+      "image_auroc": 0.9907135963439941,
+      "image_f1": 0.9732620120048523,
+      "pixel_auroc": 0.9828281998634338,
+      "pixel_f1": 0.8175395727157593,
+      "elapsed_seconds": 77.65539829991758,
+      "model": "Patchcore",
+      "backbone": "resnet18",
+      "layers": [
+        "layer2",
+        "layer3"
+      ],
+      "image_size": [
+        224,
+        224
+      ],
+      "coreset_sampling_ratio": 0.01,
+      "num_neighbors": 5,
+      "accelerator": "cpu",
+      "summary_path": "results/patchcore_multicategory/metal_nut/run_summary.json"
+    },
+    {
+      "category": "tile",
+      "image_auroc": 0.9956709742546082,
+      "image_f1": 0.976190447807312,
+      "pixel_auroc": 0.9310380816459656,
+      "pixel_f1": 0.5462066531181335,
+      "elapsed_seconds": 87.33638980006799,
+      "model": "Patchcore",
+      "backbone": "resnet18",
+      "layers": [
+        "layer2",
+        "layer3"
+      ],
+      "image_size": [
+        224,
+        224
+      ],
+      "coreset_sampling_ratio": 0.01,
+      "num_neighbors": 5,
+      "accelerator": "cpu",
+      "summary_path": "results/patchcore_multicategory/tile/run_summary.json"
+    }
+  ],
+  "macro_average": {
+    "image_auroc": 0.9957027077674866,
+    "image_f1": 0.9797109603881836,
+    "pixel_auroc": 0.9717679023742676,
+    "pixel_f1": 0.5960519731044769
+  }
+}

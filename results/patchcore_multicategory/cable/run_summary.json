@@ -1,0 +1,29 @@
+{
+  "model": "Patchcore",
+  "category": "cable",
+  "backbone": "resnet18",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "image_size": [
+    224,
+    224
+  ],
+  "coreset_sampling_ratio": 0.01,
+  "num_neighbors": 5,
+  "accelerator": "cpu",
+  "pytorch_version": "2.13.0+cpu",
+  "cuda_available": false,
+  "elapsed_seconds": 97.00600850000046,
+  "best_model_path": "results/patchcore_anomalib/cable/Patchcore/MVTecAD/cable/v0/weights/lightning/model.ckpt",
+  "test_results": [
+    {
+      "image_AUROC": 0.9921289682388306,
+      "image_F1Score": 0.9625668525695801,
+      "pixel_AUROC": 0.9807322025299072,
+      "pixel_F1Score": 0.6171160340309143
+    }
+  ],
+  "run_type": "Fixed-configuration multi-category PatchCore benchmark. The same model settings are used for every category."
+}

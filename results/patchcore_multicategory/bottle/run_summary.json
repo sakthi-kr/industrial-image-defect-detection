@@ -1,0 +1,29 @@
+{
+  "model": "Patchcore",
+  "category": "bottle",
+  "backbone": "resnet18",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "image_size": [
+    224,
+    224
+  ],
+  "coreset_sampling_ratio": 0.01,
+  "num_neighbors": 5,
+  "accelerator": "cpu",
+  "pytorch_version": "2.13.0+cpu",
+  "cuda_available": false,
+  "elapsed_seconds": 67.56135919992812,
+  "best_model_path": "results/patchcore_anomalib/bottle/Patchcore/MVTecAD/bottle/v0/weights/lightning/model.ckpt",
+  "test_results": [
+    {
+      "image_AUROC": 1.0,
+      "image_F1Score": 0.9919999837875366,
+      "pixel_AUROC": 0.9766333103179932,
+      "pixel_F1Score": 0.6560171246528625
+    }
+  ],
+  "run_type": "Fixed-configuration multi-category PatchCore benchmark. The same model settings are used for every category."
+}

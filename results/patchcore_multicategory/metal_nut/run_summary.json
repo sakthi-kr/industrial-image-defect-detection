@@ -1,0 +1,29 @@
+{
+  "model": "Patchcore",
+  "category": "metal_nut",
+  "backbone": "resnet18",
+  "layers": [
+    "layer2",
+    "layer3"
+  ],
+  "image_size": [
+    224,
+    224
+  ],
+  "coreset_sampling_ratio": 0.01,
+  "num_neighbors": 5,
+  "accelerator": "cpu",
+  "pytorch_version": "2.13.0+cpu",
+  "cuda_available": false,
+  "elapsed_seconds": 77.65539829991758,
+  "best_model_path": "results/patchcore_anomalib/metal_nut/Patchcore/MVTecAD/metal_nut/v0/weights/lightning/model.ckpt",
+  "test_results": [
+    {
+      "image_AUROC": 0.9907135963439941,
+      "image_F1Score": 0.9732620120048523,
+      "pixel_AUROC": 0.9828281998634338,
+      "pixel_F1Score": 0.8175395727157593
+    }
+  ],
+  "run_type": "Fixed-configuration multi-category PatchCore benchmark. The same model settings are used for every category."
+}

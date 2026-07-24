@@ -1,0 +1,6 @@
+category,image_auroc,image_f1,pixel_auroc,pixel_f1,elapsed_seconds,model,backbone,layers,image_size,coreset_sampling_ratio,num_neighbors,accelerator,summary_path
+bottle,1.0,0.9919999837875366,0.9766333103179932,0.6560171246528625,67.56135919992812,Patchcore,resnet18,"['layer2', 'layer3']","[224, 224]",0.01,5,cpu,results/patchcore_multicategory/bottle/run_summary.json
+cable,0.9921289682388306,0.9625668525695801,0.9807322025299072,0.6171160340309143,97.00600850000046,Patchcore,resnet18,"['layer2', 'layer3']","[224, 224]",0.01,5,cpu,results/patchcore_multicategory/cable/run_summary.json
+leather,1.0,0.994535505771637,0.9876077175140381,0.34338048100471497,100.72727150004357,Patchcore,resnet18,"['layer2', 'layer3']","[224, 224]",0.01,5,cpu,results/patchcore_multicategory/leather/run_summary.json
+metal_nut,0.9907135963439941,0.9732620120048523,0.9828281998634338,0.8175395727157593,77.65539829991758,Patchcore,resnet18,"['layer2', 'layer3']","[224, 224]",0.01,5,cpu,results/patchcore_multicategory/metal_nut/run_summary.json
+tile,0.9956709742546082,0.976190447807312,0.9310380816459656,0.5462066531181335,87.33638980006799,Patchcore,resnet18,"['layer2', 'layer3']","[224, 224]",0.01,5,cpu,results/patchcore_multicategory/tile/run_summary.json
