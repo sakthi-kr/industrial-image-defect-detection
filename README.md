@@ -27,10 +27,20 @@ Dataset:
 MVTec AD industrial anomaly detection dataset
 ```
 
-Current category:
+Supervised baseline category:
 
 ```text
 bottle
+```
+
+PatchCore benchmark categories:
+
+```text
+bottle
+cable
+leather
+metal_nut
+tile
 ```
 
 The raw dataset is not included in this repository.
@@ -41,14 +51,14 @@ Download and local folder-structure instructions are provided in:
 data/README.md
 ```
 
-The current dataset contains:
+The `bottle` development dataset contains:
 
 | Split | Images |
 |---|---:|
 | Normal training images | 209 |
 | Test images | 83 |
 
-The test set contains:
+The `bottle` test set contains:
 
 - normal bottle images
 - broken-large defects
@@ -173,7 +183,9 @@ The resulting outputs include:
 - heatmap overlay
 - comparison with the ground-truth defect mask
 
-## PatchCore Configuration
+## Bottle Reference Configuration
+
+The table below documents the original detailed `bottle` run. The five-category benchmark reuses the same model settings for `bottle`, `cable`, `leather`, `metal_nut`, and `tile`; category-level results are reported in the multi-category section below.
 
 | Parameter | Value |
 |---|---|
@@ -299,9 +311,15 @@ industrial-image-defect-detection/
 │   ├── README.md
 │   ├── model_card.md
 │   ├── validation_strategy.md
-│   └── experiment_plan.md
+│   ├── experiment_plan.md
+│   ├── patchcore_validation.md
+│   └── patchcore_multicategory_benchmark.md
 ├── notebooks/
 ├── results/
+│   └── patchcore_multicategory/
+├── scripts/
+│   ├── compare_patchcore_categories.py
+│   └── finalize_multicategory_patchcore.py
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py
@@ -313,14 +331,21 @@ industrial-image-defect-detection/
 │   ├── predict.py
 │   ├── check_anomalib_setup.py
 │   ├── train_patchcore.py
+│   ├── train_patchcore_category.py
 │   ├── inspect_patchcore_prediction.py
-│   └── generate_patchcore_report.py
+│   ├── generate_patchcore_report.py
+│   └── validate_patchcore_results.py
 ├── tests/
 │   ├── test_data_loader.py
-│   ├── test_preprocess.py
 │   ├── test_features.py
-│   └── test_prediction_output.py
+│   ├── test_preprocess.py
+│   ├── test_prediction_output.py
+│   ├── test_patchcore_validation.py
+│   ├── test_patchcore_category_runner.py
+│   ├── test_compare_patchcore_categories.py
+│   └── test_finalize_multicategory_patchcore.py
 ├── pytest.ini
+├── requirements-ci.txt
 ├── requirements.txt
 └── README.md
 ```
@@ -484,33 +509,51 @@ results/patchcore_example_heatmaps.png
 results/patchcore_score_distribution.png
 ```
 
-## Run Tests
-
-Activate the classical baseline environment:
+### 15. Run the five-category PatchCore benchmark
 
 ```bash
-source .venv/Scripts/activate
-pytest
+for category in bottle cable leather metal_nut tile
+do
+  python -u src/train_patchcore_category.py --category "$category"
+done
+
+python scripts/compare_patchcore_categories.py \
+  --categories bottle cable leather metal_nut tile
+
+python scripts/finalize_multicategory_patchcore.py
+```
+
+Generated benchmark outputs are stored under:
+
+```text
+results/patchcore_multicategory/
+docs/patchcore_multicategory_benchmark.md
+```
+
+## Run Tests
+
+Activate an environment containing the project test dependencies and the editable validation toolkit, then run:
+
+```bash
+python -m pip install -e ../ml-testing-validation-toolkit
+python -m pytest
 ```
 
 # Testing
 
 Tests currently cover:
 
-- category-folder validation
-- image-path discovery
-- dataset record creation
-- label extraction
-- RGB image loading
-- image resizing
-- pixel normalization
-- grayscale conversion
-- feature extraction
-- histogram validation
-- prediction output structure
-- class-probability checks
+- category-folder validation and image-path discovery
+- dataset record creation and label extraction
+- image loading, resizing, normalization, and feature extraction
+- prediction structure and class-probability checks
+- PatchCore category-runner configuration
+- category-summary metric extraction
+- fixed-configuration comparison checks
+- multi-category report generation
+- PatchCore artifact-schema and metric-consistency validation
 
-The PatchCore workflow is currently validated through setup, training, prediction-inspection, and report-generation scripts. Reusable tests for PatchCore result schemas will be added through the ML validation toolkit.
+The reusable PatchCore output checks are integrated through the separate `ml-testing-validation-toolkit` package.
 
 # Validation
 
@@ -518,6 +561,8 @@ The project now contains:
 
 - a supervised development baseline
 - a normal-only PatchCore anomaly detector
+- a fixed-configuration benchmark across five selected MVTec AD categories
+- reusable PatchCore artifact validation
 - image-level metrics
 - pixel-level metrics
 - anomaly heatmaps
@@ -532,11 +577,13 @@ Detailed documentation:
 docs/validation_strategy.md
 docs/experiment_plan.md
 docs/model_card.md
+docs/patchcore_validation.md
+docs/patchcore_multicategory_benchmark.md
 ```
 
 Current limitations:
 
-- only the MVTec AD `bottle` category has been evaluated
+- five of the fifteen MVTec AD categories have been evaluated
 - benchmark images are more controlled than production camera data
 - image-level detection is stronger than exact pixel-level localization
 - one normal image was falsely flagged
@@ -560,18 +607,18 @@ Current limitations:
 9. Anomaly heatmap generation
 10. Ground-truth mask comparison
 11. Anomaly-score distribution analysis
+12. Fixed-configuration PatchCore benchmark across five selected MVTec AD categories
+13. Reusable PatchCore artifact validation through the ML validation toolkit
 
 ## Planned
 
 1. Compare baseline feature groups
 2. Compare additional classical models
-3. Evaluate PatchCore on additional MVTec categories — completed for five selected categories
-4. Tune the decision threshold using a separate validation strategy
-5. Compare PatchCore with PaDiM or another anomaly detector
-6. Test robustness to lighting, blur, noise, and image transformations
-7. Integrate reusable validation utilities
-8. Build a simple user-facing inference prototype
-9. Add deployment-oriented monitoring and drift checks
+3. Tune the decision threshold using a separate validation strategy
+4. Compare PatchCore with PaDiM or another anomaly detector
+5. Test robustness to lighting, blur, noise, and image transformations
+6. Build a simple user-facing inference prototype
+7. Add deployment-oriented monitoring and drift checks
 
 # Model Card
 
@@ -606,7 +653,6 @@ Planned extensions:
 - test robustness under controlled image corruptions
 - analyze performance separately by defect type
 - add a simple inference interface
-- integrate the ML testing and validation toolkit
 - add model monitoring and data-drift checks
 
 <!-- PATCHCORE_VALIDATION_SECTION_START -->
